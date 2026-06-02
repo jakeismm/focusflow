@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FocusFlow · Supabase Auth Test</title>
+<style>
+:root{--bg:#f2f4f6;--card:#fff;--text:#191f28;--sub:#6b7684;--accent:#3182f6;--ok:#1D9E75;--err:#f04452;--line:rgba(0,0,0,0.08);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);padding:24px 16px 60px;letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:440px;margin:0 auto;}
+h1{font-size:24px;font-weight:800;letter-spacing:-0.03em;margin-bottom:4px;}
+.muted{color:var(--sub);font-size:14px;line-height:1.55;margin-bottom:20px;}
+.card{background:var(--card);border-radius:16px;padding:18px;margin-bottom:14px;border:0.5px solid var(--line);}
+.card h2{font-size:15px;font-weight:700;margin-bottom:12px;}
+label{font-size:13px;font-weight:600;display:block;margin-bottom:5px;}
+input{width:100%;border:none;background:var(--bg);border-radius:11px;padding:13px 14px;font-size:15px;margin-bottom:11px;font-family:inherit;color:var(--text);}
+input:focus{outline:2px solid var(--accent);outline-offset:-2px;}
+button{width:100%;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;}
+.btn{background:var(--accent);color:#fff;}
+.btn-2{background:var(--bg);color:var(--text);}
+.btn:active,.btn-2:active{opacity:0.85;}
+.row{display:flex;gap:8px;}
+.row button{flex:1;}
+.status{font-size:13px;padding:11px 13px;border-radius:11px;background:var(--bg);margin-bottom:12px;line-height:1.5;word-break:break-word;}
+.status.ok{background:#E7F6EE;color:#0F7A52;}
+.status.err{background:#FDECEC;color:#C0392B;}
+.pill{display:inline-block;background:#E8F3FF;color:var(--accent);font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;margin-bottom:14px;}
+pre{background:var(--bg);border-radius:11px;padding:12px;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;color:var(--sub);max-height:240px;overflow-y:auto;}
+.who{font-size:14px;font-weight:600;}
+.small{font-size:12px;color:var(--sub);}
+</style>
+</head>
+<body><div class="wrap">
+  <h1>FocusFlow · Auth Test</h1>
+  <div class="pill" id="conn-pill">connecting…</div>
+  <p class="muted">A throwaway page to confirm Supabase accounts work before wiring them into the app. Nothing here touches your FocusFlow data.</p>
+
+  <div class="status" id="who">Not signed in.</div>
+
+  <div class="card">
+    <h2>Sign up</h2>
+    <label>Email</label>
+    <input id="su-email" type="email" placeholder="test1@focusflow.test" autocomplete="off"/>
+    <label>Password</label>
+    <input id="su-pw" type="password" placeholder="at least 6 characters" autocomplete="off"/>
+    <button class="btn" onclick="signUp()">Create account</button>
+  </div>
+
+  <div class="card">
+    <h2>Log in</h2>
+    <label>Email</label>
+    <input id="li-email" type="email" placeholder="test1@focusflow.test" autocomplete="off"/>
+    <label>Password</label>
+    <input id="li-pw" type="password" placeholder="password" autocomplete="off"/>
+    <button class="btn" onclick="logIn()">Sign in</button>
+    <div class="row">
+      <button class="btn-2" onclick="whoAmI()">Who am I?</button>
+      <button class="btn-2" onclick="logOut()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Log</h2>
+    <pre id="log">—</pre>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://svhdaedoqaebccvciwpw.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2aGRhZWRvcWFlYmNjdmNpd3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MDU4MTAsImV4cCI6MjA5NTk4MTgxMH0.ptTPjHUGepSHLZbkj_pI2jq370tAK-Dj4OM_pwHy4Us';
+
+let sb;
+function log(msg, obj){
+  const el = document.getElementById('log');
+  const time = new Date().toLocaleTimeString();
+  el.textContent = '[' + time + '] ' + msg + (obj!==undefined ? '\n' + JSON.stringify(obj, null, 2) : '') + '\n\n' + el.textContent;
+}
+function setStatus(text, cls){
+  const el = document.getElementById('who');
+  el.textContent = text;
+  el.className = 'status' + (cls ? ' ' + cls : '');
+}
+
+try {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  document.getElementById('conn-pill').textContent = '✓ library loaded';
+  log('Supabase client created. URL ok.');
+  refreshWho();
+} catch (e) {
+  document.getElementById('conn-pill').textContent = '✗ failed to load';
+  log('Could not create client', String(e));
+}
+
+async function refreshWho(){
+  try {
+    const { data } = await sb.auth.getUser();
+    if (data && data.user) setStatus('Signed in as: ' + data.user.email, 'ok');
+    else setStatus('Not signed in.');
+  } catch (e) { /* ignore */ }
+}
+
+async function signUp(){
+  const email = document.getElementById('su-email').value.trim();
+  const password = document.getElementById('su-pw').value;
+  if(!email || !password){ log('Enter email + password to sign up.'); return; }
+  log('Signing up ' + email + ' …');
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if (error) { setStatus('Sign up failed: ' + error.message, 'err'); log('SIGNUP ERROR', error.message); return; }
+  setStatus('Account created + signed in: ' + email, 'ok');
+  log('SIGNUP OK', { id: data.user && data.user.id, email: data.user && data.user.email });
+  refreshWho();
+}
+
+async function logIn(){
+  const email = document.getElementById('li-email').value.trim();
+  const password = document.getElementById('li-pw').value;
+  if(!email || !password){ log('Enter email + password to log in.'); return; }
+  log('Logging in ' + email + ' …');
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) { setStatus('Login failed: ' + error.message, 'err'); log('LOGIN ERROR', error.message); return; }
+  setStatus('Signed in as: ' + email, 'ok');
+  log('LOGIN OK', { id: data.user && data.user.id, email: data.user && data.user.email });
+}
+
+async function logOut(){
+  const { error } = await sb.auth.signOut();
+  if (error) { log('SIGNOUT ERROR', error.message); return; }
+  setStatus('Not signed in.');
+  log('Signed out.');
+}
+
+async function whoAmI(){
+  const { data, error } = await sb.auth.getUser();
+  if (error) { log('getUser error', error.message); return; }
+  if (data && data.user) { setStatus('Signed in as: ' + data.user.email, 'ok'); log('CURRENT USER', { id: data.user.id, email: data.user.email, created: data.user.created_at }); }
+  else { setStatus('Not signed in.'); log('No active session.'); }
+}
+</script>
+</body></html>
