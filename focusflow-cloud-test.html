@@ -1846,9 +1846,15 @@ async function loadCloudPosts(){
   try{const {data,error}=await window.ffSB.from('posts').select('*').eq('author_id',cloudUser.id).order('created_at',{ascending:false}).limit(200);
     if(error)return false;
     const cloudPosts=(data||[]).map(cloudRowToPost);
-    /* replace any previously-loaded cloud posts, keep local-only ones that have no cloudId */
-    const localOnly=posts.filter(p=>!p._cloud&&!p.cloudId);
-    posts=[...cloudPosts, ...localOnly].sort((a,b)=>new Date(b._dateObj)-new Date(a._dateObj));
+    const cloudIds=new Set(cloudPosts.map(p=>p.cloudId));
+    /* keep any in-memory posts that aren't represented in the cloud result yet:
+       - local-only posts (no cloudId), AND
+       - posts whose cloud write may not have landed in this fetch (cloudId set but not returned) */
+    const keepLocal=posts.filter(p=>{
+      if(p.cloudId&&cloudIds.has(p.cloudId))return false; /* already in cloud result */
+      return true; /* local-only OR a just-written post not yet in this fetch */
+    });
+    posts=[...cloudPosts, ...keepLocal].sort((a,b)=>new Date(b._dateObj)-new Date(a._dateObj));
     return true;
   }catch(e){return false;}
 }
