@@ -123,7 +123,7 @@ body{display:flex;justify-content:center;min-height:100vh;}
 .hw-statcover{width:100%;height:100%;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:12px 13px;overflow:hidden;}
 .hw-stat-bg{position:absolute;right:-14px;bottom:-16px;font-size:78px;line-height:1;opacity:0.16;}
 .hw-stat-main{position:relative;z-index:1;display:flex;flex-direction:column;width:100%;}
-.hw-stat-cat{font-size:11px;font-weight:700;opacity:0.85;display:flex;align-items:center;gap:4px;margin-bottom:auto;}
+.hw-stat-cat{font-size:13px;font-weight:700;opacity:0.9;display:flex;align-items:center;gap:5px;margin-bottom:auto;}
 .hw-stat-big{font-size:27px;font-weight:800;letter-spacing:-0.02em;line-height:1;margin-top:10px;}
 .hw-stat-sub{font-size:11px;font-weight:600;opacity:0.72;margin-top:3px;}
 .home-wall.size-s .hw-stat-big{font-size:18px;}
@@ -301,13 +301,13 @@ button i.ti,.btn-sm i.ti{color:inherit;}
 .home-wall.size-l{grid-template-columns:repeat(1,minmax(0,1fr));gap:20px;}
 /* large = Instagram feed card: media on top, text/date below */
 .hw-card{background:var(--color-background-primary);border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:0.5px solid var(--color-border-tertiary);}
-.hwl-media{position:relative;}
+.hwl-media{position:relative;background:var(--color-background-secondary);min-height:80px;}
 .hwl-media img,.hwl-media video{display:block;width:100%;}
 .hwl-loc{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,0.55);color:#fff;font-size:12px;font-weight:600;padding:4px 9px;border-radius:99px;display:inline-flex;align-items:center;gap:3px;backdrop-filter:blur(4px);}
 .hwl-info{padding:13px 15px 15px;}
 .hwl-title{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:7px;}
-.hwl-cat{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:700;padding:4px 10px;border-radius:99px;}
-.hwl-stat{font-size:13px;color:var(--color-text-secondary);font-weight:600;}
+.hwl-cat{display:inline-flex;align-items:center;gap:5px;font-size:15px;font-weight:700;padding:5px 11px;border-radius:99px;}
+.hwl-stat{font-size:14px;color:var(--color-text-secondary);font-weight:600;}
 .hwl-text{font-size:15px;line-height:1.5;color:var(--color-text-primary);margin-bottom:8px;white-space:pre-wrap;}
 .hwl-tags{font-size:13px;color:var(--color-accent);font-weight:600;margin-bottom:6px;}
 .hwl-book{font-size:12px;color:var(--color-success);margin-bottom:6px;}
@@ -342,7 +342,7 @@ button i.ti,.btn-sm i.ti{color:inherit;}
 .hw-tile-text .hw-summary .hw-meta{text-shadow:none;}
 .hw-grad{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,0.78) 100%);pointer-events:none;}
 .hw-summary{position:absolute;left:0;right:0;bottom:0;padding:9px 11px;color:#fff;}
-.hw-summary .hw-title{font-size:14px;font-weight:600;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,0.4);}
+.hw-summary .hw-title{font-size:15px;font-weight:700;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,0.4);display:flex;align-items:center;gap:4px;}
 .hw-summary .hw-meta{font-size:12px;opacity:0.92;margin-top:2px;text-shadow:0 1px 3px rgba(0,0,0,0.4);}
 .hw-summary .hw-book{font-size:11px;margin-top:3px;opacity:0.92;text-shadow:0 1px 3px rgba(0,0,0,0.4);}
 /* hide text overlay at smallest size (just photos) */
@@ -1132,7 +1132,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
     <input id="ii-time" class="text-input" type="time" oninput="updateIIPreview()"/>
     <div class="field-label" data-i18n="ii_place">Place</div>
     <input id="ii-place" class="text-input" maxlength="50" placeholder="the home office" data-i18n-ph="ii_ph_p" oninput="updateIIPreview()"/>
-    <div class="menu-item" style="padding:14px 0;"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-bell" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="ii_remind">Remind me at this time</div><div class="menu-item-sub" data-i18n="ii_remind_sub">A daily nudge to start</div></div><button class="toggle on" id="ii-remind-toggle" onclick="this.classList.toggle('on')"></button></div>
+    <div class="menu-item" style="padding:14px 0;"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-bell" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="ii_remind">Remind me at this time</div><div class="menu-item-sub" data-i18n="ii_remind_sub">A daily nudge to start</div></div><button class="toggle on" id="ii-remind-toggle" onclick="this.classList.toggle('on');if(this.classList.contains('on')&&typeof _notifPermission==='function')_notifPermission();"></button></div>
     <button class="btn-main" onclick="saveIntention()" style="margin-top:10px;"><span data-i18n="ii_save">Save intention</span></button>
   </div>
 </div>
@@ -1161,6 +1161,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
         <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;padding:8px 0;" id="lc-badges"></div>
       </div>
       <button class="btn-main" onclick="openSessionEnd()" style="margin-bottom:8px;">Continue</button>
+      <button class="btn-outline" onclick="finishSessionNoPost()" style="margin-bottom:8px;">End without posting</button>
       <button class="btn-outline" onclick="goBadges()">View all achievements</button>
     </div>
   </div>
@@ -1964,6 +1965,7 @@ function cloudRowToPost(r){
     catTextColor:catMeta?catMeta.color.text:'var(--color-text-secondary)',
     catDot:catMeta?catMeta.color.dot:'#888780',
     tags:r.tags||[], intervals:r.intervals||0, focusMins:focusMins, focusTotalMin:r.focus_min||0,
+    xpEarned:(function(n){var x=0;for(var i=1;i<=n;i++){x+=40+(i>=5?20:0)+(i>=8?40:0);}return x;})(r.intervals||0),
     journal:r.journal||'', journalOnly:(!r.intervals||r.intervals===0),
     mediaList:media, media:first?first.type:'none', mediaUrl:first?first.url:null,
     loc:r.location||null, book:r.book||null, vis:r.visibility||'public',
@@ -2265,12 +2267,12 @@ function toggleTimer(){if(timerEditing)return;if(running){clearInterval(ticker);
     if(pauseStartedAt&&sessionPauses.length){const dur=Math.round((Date.now()-pauseStartedAt)/1000);sessionPauses[sessionPauses.length-1].durationSec=dur;sessionPauseTotal+=dur;pauseStartedAt=null;}
     startTicking();
   }updateTimerOverlay();}
-function intervalDone(){playFocusEndChime();haptic('intervalEnd');sessionIntervals++;const xpGain=40+(sessionIntervals>=5?20:0)+(sessionIntervals>=8?40:0);xpTotal+=xpGain;document.getElementById('h-xp').textContent=xpTotal;spawnXpPop(xpGain);updateLevelUI();showToast(INT_MSGS[sessionIntervals]||'Interval '+sessionIntervals+'!','success');const ni=sessionIntervals+1;if(!nudgeDismissed&&DROP_INTERVALS.includes(ni)){const idx=DROP_INTERVALS.indexOf(ni);document.getElementById('nudge-title').textContent=NUDGES[idx].title;document.getElementById('nudge-msg').textContent=NUDGES[idx].msg;showNudge();}renderDots();updateIntervalBadge();const isGoalMet=!infiniteMode&&sessionIntervals>=intervalGoal;
+function intervalDone(manual){playFocusEndChime();haptic('intervalEnd');sessionIntervals++;const xpGain=40+(sessionIntervals>=5?20:0)+(sessionIntervals>=8?40:0);xpTotal+=xpGain;document.getElementById('h-xp').textContent=xpTotal;spawnXpPop(xpGain);updateLevelUI();showToast(INT_MSGS[sessionIntervals]||'Interval '+sessionIntervals+'!','success');const ni=sessionIntervals+1;if(!nudgeDismissed&&DROP_INTERVALS.includes(ni)){const idx=DROP_INTERVALS.indexOf(ni);document.getElementById('nudge-title').textContent=NUDGES[idx].title;document.getElementById('nudge-msg').textContent=NUDGES[idx].msg;showNudge();}renderDots();updateIntervalBadge();const isGoalMet=!infiniteMode&&sessionIntervals>=intervalGoal;
   if(twoMinMode&&isGoalMet){clearInterval(ticker);clearTimeout(phaseTimeout);running=false;haptic('success');document.getElementById('timer-overlay').classList.remove('show');showModal('twomin-done-modal');return;}
-  if(isGoalMet){launchConfetti();setTimeout(()=>openLevelComplete(),700);return;}isRest=true;totalSecs=restMins*60;remaining=totalSecs;setPhaseUI();document.getElementById('big-timer').textContent=fmt(remaining);if(timerOverlayPinned)updateTimerOverlay();if(autoplay)phaseTimeout=setTimeout(startTicking,800);else{setIcon('play-icon','ti-player-play');startAlarmLoop();var _sb=document.getElementById('stop-alarm-btn');if(_sb)_sb.style.display='inline-flex';}}
-function restDone(){playRestEndChime();haptic('restEnd');isRest=false;totalSecs=focusMins*60;remaining=totalSecs;setPhaseUI();document.getElementById('big-timer').textContent=fmt(remaining);if(timerOverlayPinned)updateTimerOverlay();if(autoplay)phaseTimeout=setTimeout(startTicking,800);else{setIcon('play-icon','ti-player-play');startAlarmLoop();var _sb=document.getElementById('stop-alarm-btn');if(_sb)_sb.style.display='inline-flex';}}
+  if(isGoalMet){launchConfetti();setTimeout(()=>openLevelComplete(),700);return;}isRest=true;totalSecs=restMins*60;remaining=totalSecs;setPhaseUI();document.getElementById('big-timer').textContent=fmt(remaining);if(timerOverlayPinned)updateTimerOverlay();if(autoplay)phaseTimeout=setTimeout(startTicking,800);else{setIcon('play-icon','ti-player-play');if(!manual){startAlarmLoop();var _sb=document.getElementById('stop-alarm-btn');if(_sb)_sb.style.display='inline-flex';}}}
+function restDone(manual){playRestEndChime();haptic('restEnd');isRest=false;totalSecs=focusMins*60;remaining=totalSecs;setPhaseUI();document.getElementById('big-timer').textContent=fmt(remaining);if(timerOverlayPinned)updateTimerOverlay();if(autoplay)phaseTimeout=setTimeout(startTicking,800);else{setIcon('play-icon','ti-player-play');if(!manual){startAlarmLoop();var _sb=document.getElementById('stop-alarm-btn');if(_sb)_sb.style.display='inline-flex';}}}
 function resetTimer(){clearInterval(ticker);running=false;remaining=totalSecs;document.getElementById('big-timer').textContent=fmt(remaining);setIcon('play-icon','ti-player-play');updateTimerOverlay();}
-function skipPhase(){clearInterval(ticker);running=false;if(!isRest)intervalDone();else restDone();}
+function skipPhase(){if(typeof stopAlarm==='function')stopAlarm();clearInterval(ticker);running=false;if(!isRest)intervalDone(true);else restDone(true);}
 function confirmEnd(){if(typeof stopAlarm==='function')stopAlarm();clearInterval(ticker);running=false;document.getElementById('ecm-sub').textContent=sessionIntervals>0?'You\'ve completed '+sessionIntervals+' interval'+(sessionIntervals!==1?'s':'')+'.':'No intervals completed.';showModal('end-confirm-modal');}
 function confirmEndSync(){if(syncRunning){clearInterval(syncTicker);syncRunning=false;setIcon('sync-play-icon','ti-player-play');}showModal('end-sync-modal');}
 function doEndSession(){if(typeof stopAlarm==='function')stopAlarm();closeModal('end-confirm-modal');clearInterval(ticker);clearTimeout(phaseTimeout);running=false;document.getElementById('timer-overlay').classList.remove('show');if(sessionIntervals>0)openLevelComplete();else{goRoot('s-home');}}
@@ -2597,7 +2599,7 @@ function wallTileHTML(p){
     else if(snippet){media='';}
     else if(journal){media=`<div class="hwl-media"><div class="hw-cover" style="background:${p.catColor};color:${p.catTextColor};aspect-ratio:1/1;"><i class="ti ${p.catIcon}" style="font-size:40px;"></i></div></div>`;}
     else{media=`<div class="hwl-media"><div class="hw-cover hw-statcover" style="background:${p.catColor};color:${p.catTextColor};aspect-ratio:16/10;"><i class="ti ${p.catIcon}" style="font-size:24px;opacity:0.85;"></i><div style="font-size:32px;font-weight:800;line-height:1;margin-top:8px;letter-spacing:-0.02em;">${fmtMins(p.focusTotalMin)}</div><div style="font-size:12px;font-weight:600;opacity:0.85;margin-top:5px;">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))}${p.pauseCount?' · '+p.pauseCount+(LANG==='ko'?' 정지':' pause'+(p.pauseCount!==1?'s':'')):''}</div></div></div>`;}
-    const titleLine=journal?'':`<div class="hwl-title"><span class="hwl-cat" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon}" style="font-size:12px;"></i> ${escapeHtml(p.catName)}</span> <span class="hwl-stat">${fmtMins(p.focusTotalMin)} · ${p.intervals}${LANG==='ko'?' 인터벌':' int'}</span></div>`;
+    const titleLine=journal?'':`<div class="hwl-title"><span class="hwl-cat" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon}" style="font-size:15px;"></i> ${escapeHtml(p.catName)}</span> <span class="hwl-stat">${fmtMins(p.focusTotalMin)} · ${p.intervals}${LANG==='ko'?' 인터벌':' int'}</span></div>`;
     const tagsLine=(p.tags&&p.tags.length)?`<div class="hwl-tags">${p.tags.slice(0,4).map(t=>'#'+escapeHtml(t)).join(' ')}</div>`:'';
     const body=snippet?`<div class="hwl-text">${snippet}</div>`:'';
     const book=(p.book&&p.book.title)?`<div class="hwl-book"><i class="ti ti-book-2" style="font-size:12px;vertical-align:-2px;"></i> ${escapeHtml(p.book.title)}</div>`:'';
@@ -2605,7 +2607,7 @@ function wallTileHTML(p){
   }
   /* ── SMALL / MEDIUM: compact tile with overlay ── */
   const first=list[0];
-  const statCover=`<div class="hw-statcover" style="background:linear-gradient(150deg, ${p.catColor} 0%, var(--color-background-secondary) 135%);color:${p.catTextColor};"><i class="ti ${p.catIcon} hw-stat-bg"></i><div class="hw-stat-main"><div class="hw-stat-cat"><i class="ti ${p.catIcon}" style="font-size:13px;"></i> ${escapeHtml(p.catName)}</div><div class="hw-stat-big">${fmtMins(p.focusTotalMin)}</div><div class="hw-stat-sub">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))} · ${dateStr}</div></div></div>`;
+  const statCover=`<div class="hw-statcover" style="background:linear-gradient(150deg, ${p.catColor} 0%, var(--color-background-secondary) 135%);color:${p.catTextColor};"><i class="ti ${p.catIcon} hw-stat-bg"></i><div class="hw-stat-main"><div class="hw-stat-cat"><i class="ti ${p.catIcon}" style="font-size:15px;"></i> ${escapeHtml(p.catName)}</div><div class="hw-stat-big">${fmtMins(p.focusTotalMin)}</div><div class="hw-stat-sub">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))} · ${dateStr}</div></div></div>`;
   const isStat=!first&&!journal;
   const textCover=(!list.length&&snippet)?`<div class="hw-textcover"><div class="hw-textcover-quote">"</div><div class="hw-textcover-body">${snippet}</div></div>`:`<div class="hw-cover" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon}" style="font-size:30px;"></i></div>`;
   const cover=first?(first.type==='video'?`<video src="${first.url}" muted loop playsinline></video>`:`<img src="${first.url}"/>`):(isStat?statCover:textCover);
@@ -2615,7 +2617,7 @@ function wallTileHTML(p){
   const tags=(!journal&&p.tags&&p.tags.length)?' · '+escapeHtml(p.tags.slice(0,1).join(', ')):'';
   const capLine=(first&&snippet)?`<div class="hw-cap">${snippet}</div>`:'';
   const locBadge=(first&&p.loc)?`<div class="hw-loc"><i class="ti ti-map-pin" style="font-size:10px;"></i> ${escapeHtml(p.loc)}</div>`:'';
-  const overlay=isStat?`<div class="hw-statvis"><i class="ti ${_visI}"></i></div>`:`<div class="hw-grad"></div><div class="hw-summary"><div class="hw-title">${title}${tags}</div><div class="hw-meta"><i class="ti ${_visI}" style="font-size:10px;vertical-align:-1px;"></i> ${meta}</div>${capLine}</div>`;
+  const overlay=isStat?`<div class="hw-statvis"><i class="ti ${_visI}"></i></div>`:`<div class="hw-grad"></div><div class="hw-summary"><div class="hw-title">${title?`<i class="ti ${p.catIcon}" style="font-size:14px;"></i>`:''}<span>${title}${tags}</span></div><div class="hw-meta"><i class="ti ${_visI}" style="font-size:10px;vertical-align:-1px;"></i> ${meta}</div>${capLine}</div>`;
   return `<div class="hw-tile${(!list.length&&snippet)?' hw-tile-text':''}${_selCls}" onclick="${_click}">${cover}${multi}${locBadge}${_selMark}${overlay}</div>`;
 }
 /* lightweight carousel for wall cards (separate id-space from the detail carousel) */
@@ -2641,7 +2643,7 @@ function openPost(id,backFn){viewingPostId=id;const p=posts.find(x=>x.id===id)||
   /* journal-only posts hide the session stats + timeline */
   document.getElementById('dash-stats-grid').style.display=isJournal?'none':'grid';
   document.getElementById('dash-timeline-section').style.display=isJournal?'none':'block';
-  if(!isJournal){document.getElementById('dash-focus-time').textContent=fmtMins(p.focusTotalMin);document.getElementById('dash-intervals').textContent=p.intervals;document.getElementById('dash-xp-earned').textContent='+'+p.xpEarned+' XP';const pc=p.pauseCount||0;document.getElementById('dash-pauses').textContent=pc===0?'0':(pc+(p.pauseTotalSec?' · '+fmtPauseDur(p.pauseTotalSec):''));
+  if(!isJournal){document.getElementById('dash-focus-time').textContent=fmtMins(p.focusTotalMin);document.getElementById('dash-intervals').textContent=p.intervals;document.getElementById('dash-xp-earned').textContent='+'+(p.xpEarned||0)+' XP';const pc=p.pauseCount||0;document.getElementById('dash-pauses').textContent=pc===0?'0':(pc+(p.pauseTotalSec?' · '+fmtPauseDur(p.pauseTotalSec):''));
     const tl=document.getElementById('dash-timeline');const tlWrap=tl.parentElement;tl.innerHTML='';
     /* clear old markers from wrapper */
     [...tlWrap.querySelectorAll('.pause-mk')].forEach(m=>m.remove());
@@ -2905,7 +2907,7 @@ function badgeInfo(id){const b=BADGES.find(x=>x.id===id);if(!b)return;const nm=b
 function fmtTime12(t){if(!t)return'';const[h,m]=t.split(':').map(Number);if(isNaN(h))return t;const ap=h<12?'AM':'PM';const h12=h%12||12;return h12+':'+String(m||0).padStart(2,'0')+' '+ap;}
 function openNewIntention(){document.getElementById('ii-behavior').value='';document.getElementById('ii-time').value='07:00';document.getElementById('ii-place').value='';document.getElementById('ii-remind-toggle').classList.add('on');updateIIPreview();go('s-new-intention');}
 function updateIIPreview(){const b=(document.getElementById('ii-behavior').value||'').trim();const t=document.getElementById('ii-time').value;const p=(document.getElementById('ii-place').value||'').trim();document.getElementById('ii-pv-b').textContent=b||'___';document.getElementById('ii-pv-t').textContent=t?fmtTime12(t):'___';document.getElementById('ii-pv-p').textContent=p||'___';}
-function saveIntention(){const b=(document.getElementById('ii-behavior').value||'').trim();const t=document.getElementById('ii-time').value;const p=(document.getElementById('ii-place').value||'').trim();if(!b){showToast(LANG==='ko'?'무엇을 할지 적어주세요':'Add what you\'ll do');return;}const on=document.getElementById('ii-remind-toggle').classList.contains('on');intentions.push({id:'ii'+Date.now(),behavior:b,time:t,place:p,reminderOn:on});persist&&persist();renderIntentions();goRoot('s-home');showToast(LANG==='ko'?'실행 의도가 저장되었어요':'Intention saved','success');}
+function saveIntention(){const b=(document.getElementById('ii-behavior').value||'').trim();const t=document.getElementById('ii-time').value;const p=(document.getElementById('ii-place').value||'').trim();if(!b){showToast(LANG==='ko'?'무엇을 할지 적어주세요':'Add what you\'ll do');return;}const on=document.getElementById('ii-remind-toggle').classList.contains('on');intentions.push({id:'ii'+Date.now(),behavior:b,time:t,place:p,reminderOn:on});persist&&persist();renderIntentions();if(on&&typeof _notifPermission==='function')_notifPermission();if(typeof scheduleIntentionReminders==='function')scheduleIntentionReminders();goRoot('s-home');showToast(LANG==='ko'?'실행 의도가 저장되었어요':'Intention saved','success');}
 function deleteIntention(id){intentions=intentions.filter(x=>x.id!==id);persist&&persist();renderIntentions();showToast(LANG==='ko'?'삭제되었어요':'Removed');}
 function renderIntentions(){const el=document.getElementById('intentions-section');if(!el)return;
   const header=`<div style="padding:14px 20px 8px;display:flex;align-items:center;justify-content:space-between;"><div class="sec-label" style="margin-bottom:0;" data-i18n="ii_section">My intentions</div><button class="btn-ghost" onclick="openNewIntention()"><i class="ti ti-plus" style="font-size:14px;vertical-align:-2px;"></i> <span data-i18n="ii_new">New</span></button></div>`;
@@ -3262,6 +3264,52 @@ function updatePostSplitRow(){
   else { row.style.display='none'; window.postMediaSplit=false; }
 }
 
+/* ── Finish a completed session without posting ── */
+function finishSessionNoPost(){ if(typeof stopAlarm==='function')stopAlarm(); mediaData.end=[]; window._endGroup=null; if(typeof goRoot==='function')goRoot('s-home'); showToast(_t('Session saved','\uC138\uC158\uC774 \uC800\uC7A5\uB410\uC5B4\uC694'),'success'); }
+
+/* ── Intention reminders (#9): fire a notification at the set time ── */
+function _notifPermission(){ try{ if('Notification' in window && Notification.permission==='default'){ Notification.requestPermission(); } }catch(e){} }
+function _fireNotification(title, body){
+  try{
+    if('Notification' in window && Notification.permission==='granted'){
+      if(navigator.serviceWorker && navigator.serviceWorker.ready){
+        navigator.serviceWorker.ready.then(function(reg){ try{reg.showNotification(title,{body:body,tag:'ff-intention'});}catch(e){ try{new Notification(title,{body:body});}catch(e2){} } });
+      } else { try{new Notification(title,{body:body});}catch(e){} }
+    } else { showToast('\u23F0 '+body); }
+  }catch(e){}
+}
+function _tryTriggerNotification(title, body, ts, id){
+  try{
+    if(!('Notification' in window)||Notification.permission!=='granted')return;
+    if(typeof TimestampTrigger==='undefined')return;
+    if(navigator.serviceWorker && navigator.serviceWorker.ready){
+      navigator.serviceWorker.ready.then(function(reg){ try{ reg.showNotification(title,{body:body,tag:'ff-ii-'+id,showTrigger:new TimestampTrigger(ts)}); }catch(e){} });
+    }
+  }catch(e){}
+}
+function scheduleIntentionReminders(){
+  try{
+    if(!('Notification' in window))return;
+    if(typeof intentions==='undefined'||!intentions)return;
+    if(window._iiTimers){window._iiTimers.forEach(function(t){clearTimeout(t);});}
+    window._iiTimers=[];
+    intentions.forEach(function(it){
+      if(!it.reminderOn||!it.time)return;
+      var parts=String(it.time).split(':'); if(parts.length<2)return;
+      var hh=parseInt(parts[0],10), mm=parseInt(parts[1],10); if(isNaN(hh)||isNaN(mm))return;
+      var now=new Date(); var next=new Date(); next.setHours(hh,mm,0,0);
+      if(next.getTime()<=now.getTime()) next.setDate(next.getDate()+1);
+      var delay=next.getTime()-now.getTime();
+      var title=_t('Time to focus','\uC9D1\uC911\uD560 \uC2DC\uAC04\uC774\uC5D0\uC694');
+      var body=it.behavior+(it.place?(' \u00B7 '+it.place):'');
+      _tryTriggerNotification(title, body, next.getTime(), it.id);
+      var tid=setTimeout(function(){ _fireNotification(title, body); scheduleIntentionReminders(); }, Math.min(delay, 2147483000));
+      window._iiTimers.push(tid);
+    });
+  }catch(e){}
+}
+setTimeout(function(){ try{ scheduleIntentionReminders(); }catch(e){} }, 1800);
+
 /* ── Generic confirm dialog ── */
 function askConfirm(o){
   o=o||{};
@@ -3557,6 +3605,9 @@ async function loadGroupFeed(){
     rows.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
     var pm=await _profilesMap(rows.map(r=>r.author_id));
     var list=rows.map(r=>{var p=cloudRowToPost(r);p._community=true;var a=pm[r.author_id]||{};p.authorHandle=a.handle||'user';p.authorName=a.name||'User';return p;});
+    var _have={}; list.forEach(function(x){if(x.cloudId)_have[x.cloudId]=1;});
+    try{(posts||[]).forEach(function(lp){if(lp.groupId===gid&&!(lp.cloudId&&_have[lp.cloudId])&&!list.some(function(x){return x.id===lp.id;})){var c=Object.assign({},lp);c._community=true;c.authorId=cloudUser?cloudUser.id:null;c.authorHandle=cloudUser?(cloudUser.handle||'you'):'you';c.authorName=cloudUser?(cloudUser.handle||'You'):'You';list.push(c);}});}catch(e){}
+    list.sort(function(a,b){return new Date(b._dateObj||0)-new Date(a._dateObj||0);});
     renderCommunityFeed(el,list,_t('No posts yet. Start a session or post to kick things off!','\uC544\uC9C1 \uAC8C\uC2DC\uBB3C\uC774 \uC5C6\uC5B4\uC694. \uC138\uC158\uC774\uB098 \uAE00\uB85C \uC2DC\uC791\uD574 \uBCF4\uC138\uC694!'),'s-group');
   }catch(e){ el.innerHTML='<div class="cf-empty">'+_t('Could not load the group feed.','\uADF8\uB8F9 \uD53C\uB4DC\uB97C \uBD88\uB7EC\uC624\uC9C0 \uBABB\uD588\uC5B4\uC694.')+'</div>'; }
 }
@@ -3583,6 +3634,7 @@ async function loadGroupBoard(){
     var totals={}; memberIds.forEach(id=>totals[id]=0);
     try{const {data}=await window.ffSB.from('posts').select('author_id,focus_min,kind').in('author_id',memberIds).eq('kind','session').limit(1000);
       (data||[]).forEach(r=>{if(totals[r.author_id]==null)totals[r.author_id]=0;totals[r.author_id]+=(r.focus_min||0);});}catch(e){}
+    try{if(cloudUser&&totals[cloudUser.id]!=null){(posts||[]).forEach(function(lp){if(lp.intervals>0&&!lp.cloudId)totals[cloudUser.id]+=(lp.focusTotalMin||0);});}}catch(e){}
     var pm=await _profilesMap(memberIds);
     var ranked=memberIds.map(id=>({id:id,min:totals[id]||0,h:(pm[id]||{}).handle||'user',n:(pm[id]||{}).name||'User'})).sort((a,b)=>b.min-a.min);
     var medal=['\uD83E\uDD47','\uD83E\uDD48','\uD83E\uDD49'];
