@@ -136,6 +136,8 @@ body{display:flex;justify-content:center;min-height:100vh;}
 .hw-select{position:absolute;top:7px;left:8px;z-index:3;font-size:22px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.5);line-height:1;}
 .hw-select.on{color:var(--color-accent);}
 .hw-card .hw-select{top:10px;left:11px;}
+.hwl-text.clamp{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.hwl-more{background:none;border:none;color:var(--color-accent);font-weight:600;font-size:13px;cursor:pointer;padding:3px 0 0;font-family:var(--font-sans);}
 </style>
 </head>
 <body>
@@ -777,7 +779,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
         <button class="wall-size-btn active" id="wsz-m" onclick="setWallSize('m')" aria-label="Medium"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></button>
         <button class="wall-size-btn" id="wsz-l" onclick="setWallSize('l')" aria-label="Large"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></button>
         <button class="wall-size-btn" id="wsz-tl" onclick="setWallMode('timeline')" aria-label="Timeline" style="margin-left:3px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="5" cy="6" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="6" x2="20" y2="6"/><circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="12" x2="20" y2="12"/><circle cx="5" cy="18" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="18" x2="20" y2="18"/></svg></button>
-        <button class="wall-size-btn" id="wsz-select" onclick="toggleWallSelectMode()" aria-label="Select" style="margin-left:6px;"><i class="ti ti-circle-check" style="font-size:15px;"></i></button>
+        <button class="wall-size-btn" id="wsz-select" onclick="toggleWallSelectMode()" aria-label="Select" style="margin-left:6px;"><i class="ti ti-square-check" style="font-size:15px;"></i></button>
       </div>
     </div>
     <div class="home-wall size-m" id="wall-grid" style="padding-bottom:18px;"></div>
@@ -785,7 +787,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
     <div id="wall-timeline" style="display:none;padding-bottom:18px;">
       <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 20px 10px;">
         <button class="ib" onclick="timelineDayShift(-1)" aria-label="Previous day" style="padding:6px;"><i class="ti ti-chevron-left" style="font-size:20px;"></i></button>
-        <div style="text-align:center;cursor:pointer;" onclick="timelineGoToday()"><div id="tl-day-label" style="font-size:16px;font-weight:700;letter-spacing:-0.01em;">Today</div><div id="tl-day-sub" style="font-size:12px;color:var(--color-text-secondary);margin-top:1px;"></div></div>
+        <div style="text-align:center;cursor:pointer;position:relative;" onclick="openTimelineDatePicker()"><div id="tl-day-label" style="font-size:16px;font-weight:700;letter-spacing:-0.01em;display:flex;align-items:center;justify-content:center;gap:5px;">Today</div><div id="tl-day-sub" style="font-size:12px;color:var(--color-text-secondary);margin-top:1px;"></div><input type="date" id="tl-date-input" onchange="timelinePickDate(this.value)" onclick="event.stopPropagation();" style="position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0;"/></div>
         <button class="ib" id="tl-next-btn" onclick="timelineDayShift(1)" aria-label="Next day" style="padding:6px;"><i class="ti ti-chevron-right" style="font-size:20px;"></i></button>
       </div>
       <div id="tl-body"></div>
@@ -1384,6 +1386,10 @@ let _pageReadyT=null;
    Each entry is the inner SVG markup for a 24x24 viewBox, stroke-based (Tabler outline style).
    iconReplace() swaps every <i class="ti ti-NAME"> for its SVG; called on load and after dynamic renders. */
 const ICON_PATHS={
+'square':'<rect x="4" y="4" width="16" height="16" rx="2"/>',
+'square-check':'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 12l2 2l4-4"/>',
+'checkbox':'<rect x="4" y="4" width="16" height="16" rx="2"/>',
+'circle-check':'<circle cx="12" cy="12" r="9"/><path d="M9 12l2 2l4-4"/>',
  'arrow-left':'<path d="M5 12h14M5 12l6 6M5 12l6-6"/>',
  'device-vibrate':'<path d="M9 4h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM4 9v6M20 9v6"/>',
  'calendar-event':'<rect x="4" y="5" width="16" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="4" y1="11" x2="20" y2="11"/><rect x="8" y="15" width="2" height="2"/>',
@@ -2603,7 +2609,7 @@ function wallTileHTML(p){
   const _sel=!!window.wallSelectMode;
   const _isSel=_sel&&window.wallSelected&&window.wallSelected.has(p.id);
   const _click=_sel?`toggleWallSelect('${p.id}')`:`openPost('${p.id}')`;
-  const _selMark=_sel?`<div class="hw-select${_isSel?' on':''}"><i class="ti ${_isSel?'ti-circle-check-filled':'ti-circle'}"></i></div>`:'';
+  const _selMark=_sel?`<div class="hw-select${_isSel?' on':''}"><i class="ti ${_isSel?'ti-square-check':'ti-square'}"></i></div>`:'';
   const _selCls=_isSel?' hw-sel-on':'';
   /* ── LARGE: Instagram feed card — media on top (carousel if multiple), text & date BELOW ── */
   if(homeWallSize==='l'){
@@ -2614,7 +2620,8 @@ function wallTileHTML(p){
     else{media=`<div class="hwl-media"><div class="hw-cover hw-statcover" style="background:${p.catColor};color:${p.catTextColor};aspect-ratio:16/10;"><i class="ti ${p.catIcon}" style="font-size:24px;opacity:0.85;"></i><div style="font-size:32px;font-weight:800;line-height:1;margin-top:8px;letter-spacing:-0.02em;">${fmtMins(p.focusTotalMin)}</div><div style="font-size:12px;font-weight:600;opacity:0.85;margin-top:5px;">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))}${p.pauseCount?' · '+p.pauseCount+(LANG==='ko'?' 정지':' pause'+(p.pauseCount!==1?'s':'')):''}</div></div></div>`;}
     const titleLine=(journal&&!p.catChosen)?'':`<div class="hwl-title"><span class="hwl-cat" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon}" style="font-size:15px;"></i> ${escapeHtml(p.catName)}</span> ${p.intervals>0?`<span class="hwl-stat">${fmtMins(p.focusTotalMin)} · ${p.intervals}${LANG==='ko'?' 인터벌':' int'}</span>`:''}</div>`;
     const tagsLine=(p.tags&&p.tags.length)?`<div class="hwl-tags">${p.tags.slice(0,4).map(t=>'#'+escapeHtml(t)).join(' ')}</div>`:'';
-    const body=snippet?`<div class="hwl-text">${snippet}</div>`:'';
+    const _long=snippet&&snippet.length>140;
+    const body=snippet?`<div class="hwl-text${_long?' clamp':''}" id="hwl-text-${p.id}">${snippet}</div>${_long?`<button class="hwl-more" onclick="event.stopPropagation();toggleHwlMore('${p.id}',this)">${LANG==='ko'?'더보기':'more'}</button>`:''}`:'';
     const book=(p.book&&p.book.title)?`<div class="hwl-book"><i class="ti ti-book-2" style="font-size:12px;vertical-align:-2px;"></i> ${escapeHtml(p.book.title)}</div>`:'';
     return `<div class="hw-card${_selCls}" onclick="${_click}">${_selMark}${media}<div class="hwl-info">${titleLine}${body}${tagsLine}${book}<div class="hwl-date">${dateStr} · <i class="ti ${_visI}" style="font-size:11px;vertical-align:-1px;"></i> ${_visName}</div></div></div>`;
   }
@@ -3038,7 +3045,7 @@ function renderIdentity(){
     const votes=identityVotes||totalSessions||0;
     el.innerHTML=`<div onclick="openIdentityEdit()" style="cursor:pointer;">
       <div style="font-size:14px;font-weight:600;line-height:1.3;color:var(--color-text-primary);">${LANG==='ko'?'<span style="color:var(--color-accent);font-weight:700;">🎯 </span>':'<span style="color:var(--color-accent);font-weight:700;">becoming </span>'}${escapeHtml(identityStatement)} <i class="ti ti-pencil" style="font-size:12px;color:var(--color-text-tertiary);vertical-align:0;"></i></div>
-      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:1px;">${votes} ${LANG==='ko'?'표':'votes'}${(streakDays||0)>0?' · '+streakDays+(LANG==='ko'?'일 연속':'d streak'):''}</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:1px;">${votes} ${LANG==='ko'?'세션':'sessions'}${(streakDays||0)>0?' · '+streakDays+(LANG==='ko'?'일 연속':'d streak'):''}</div>
     </div>`;
     iconReplace(el);
   }else if(!identityHidden){
@@ -3342,7 +3349,7 @@ function renderPostTagChips(){ var el=document.getElementById('post-tag-chips');
 function addPostTodo(){ var inp=document.getElementById('post-todo-input'); if(!inp)return; var v=(inp.value||'').trim(); if(!v)return; if(!window.postTodos)window.postTodos=[]; window.postTodos.push({text:v,done:false}); inp.value=''; renderPostTodoList(); }
 function removePostTodo(i){ (window.postTodos||[]).splice(i,1); renderPostTodoList(); }
 function togglePostTodoEdit(i){ if(window.postTodos&&window.postTodos[i])window.postTodos[i].done=!window.postTodos[i].done; renderPostTodoList(); }
-function renderPostTodoList(){ var el=document.getElementById('post-todo-list'); if(!el)return; if(!window.postTodos||!window.postTodos.length){el.innerHTML='';return;} el.innerHTML=window.postTodos.map(function(td,i){return '<div style="display:flex;align-items:center;gap:9px;padding:7px 0;"><i class="ti '+(td.done?'ti-square-rounded-check-filled':'ti-square-rounded')+'" style="font-size:20px;color:'+(td.done?'var(--color-accent)':'var(--color-text-tertiary)')+';cursor:pointer;flex-shrink:0;" onclick="togglePostTodoEdit('+i+')"></i><span style="flex:1;font-size:14px;'+(td.done?'text-decoration:line-through;color:var(--color-text-tertiary);':'')+'">'+escapeHtml(td.text)+'</span><i class="ti ti-x" style="font-size:15px;color:var(--color-text-tertiary);cursor:pointer;flex-shrink:0;" onclick="removePostTodo('+i+')"></i></div>';}).join(''); if(typeof iconReplace==='function')iconReplace(el); }
+function renderPostTodoList(){ var el=document.getElementById('post-todo-list'); if(!el)return; if(!window.postTodos||!window.postTodos.length){el.innerHTML='';return;} el.innerHTML=window.postTodos.map(function(td,i){return '<div style="display:flex;align-items:center;gap:9px;padding:7px 0;"><i class="ti '+(td.done?'ti-square-check':'ti-square')+'" style="font-size:20px;color:'+(td.done?'var(--color-accent)':'var(--color-text-tertiary)')+';cursor:pointer;flex-shrink:0;" onclick="togglePostTodoEdit('+i+')"></i><span style="flex:1;font-size:14px;'+(td.done?'text-decoration:line-through;color:var(--color-text-tertiary);':'')+'">'+escapeHtml(td.text)+'</span><i class="ti ti-x" style="font-size:15px;color:var(--color-text-tertiary);cursor:pointer;flex-shrink:0;" onclick="removePostTodo('+i+')"></i></div>';}).join(''); if(typeof iconReplace==='function')iconReplace(el); }
 function _resetPostExtras(){ window.postCatId=null; window.postTags=[]; window.postTodos=[]; renderPostCatChips(); renderPostTagChips(); renderPostTodoList(); }
 function _loadPostExtras(p){ window.postCatId=(p.catChosen&&cats?((cats.find(function(c){return c.name===p.catName;})||{}).id||null):null); window.postTags=(p.tags||[]).slice(); window.postTodos=(p.todos||[]).map(function(t){return {text:t.text,done:!!t.done};}); renderPostCatChips(); renderPostTagChips(); renderPostTodoList(); }
 function _applyPostExtras(o){
@@ -3361,7 +3368,7 @@ function _renderDetailTodos(p){
   var done=td.filter(function(t){return t.done;}).length;
   var tt=document.getElementById('dash-todos-title'); if(tt)tt.textContent=_t('To-do','\uD560 \uC77C')+' ('+done+'/'+td.length+')';
   var own=!p._community;
-  document.getElementById('dash-todos').innerHTML=td.map(function(t,i){return '<div style="display:flex;align-items:center;gap:9px;padding:7px 0;'+(own?'cursor:pointer;':'')+'" '+(own?('onclick="toggleDetailTodo(\''+p.id+'\','+i+')"'):'')+'><i class="ti '+(t.done?'ti-square-rounded-check-filled':'ti-square-rounded')+'" style="font-size:20px;color:'+(t.done?'var(--color-accent)':'var(--color-text-tertiary)')+';"></i><span style="flex:1;font-size:14px;'+(t.done?'text-decoration:line-through;color:var(--color-text-tertiary);':'')+'">'+escapeHtml(t.text)+'</span></div>';}).join('');
+  document.getElementById('dash-todos').innerHTML=td.map(function(t,i){return '<div style="display:flex;align-items:center;gap:9px;padding:7px 0;'+(own?'cursor:pointer;':'')+'" '+(own?('onclick="toggleDetailTodo(\''+p.id+'\','+i+')"'):'')+'><i class="ti '+(t.done?'ti-square-check':'ti-square')+'" style="font-size:20px;color:'+(t.done?'var(--color-accent)':'var(--color-text-tertiary)')+';"></i><span style="flex:1;font-size:14px;'+(t.done?'text-decoration:line-through;color:var(--color-text-tertiary);':'')+'">'+escapeHtml(t.text)+'</span></div>';}).join('');
   if(typeof iconReplace==='function')iconReplace(document.getElementById('dash-todos'));
 }
 function toggleDetailTodo(id,i){
@@ -3372,6 +3379,23 @@ function toggleDetailTodo(id,i){
   _renderDetailTodos(p);
   if(typeof renderWall==='function')renderWall();
 }
+
+/* ── Timeline: tap the date to pick any day (#2) ── */
+function _fmtDateInput(d){d=d||new Date();var y=d.getFullYear();var m=String(d.getMonth()+1).padStart(2,'0');var dd=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+dd;}
+function openTimelineDatePicker(){
+  var inp=document.getElementById('tl-date-input'); if(!inp)return;
+  try{inp.value=_fmtDateInput(typeof timelineDate!=='undefined'?timelineDate:new Date());}catch(e){}
+  if(inp.showPicker){try{inp.showPicker();return;}catch(e){}}
+  inp.click();
+}
+function timelinePickDate(v){
+  if(!v)return; var parts=v.split('-'); if(parts.length<3)return;
+  timelineDate=new Date(parseInt(parts[0],10),parseInt(parts[1],10)-1,parseInt(parts[2],10));
+  if(typeof renderTimeline==='function')renderTimeline();
+}
+
+/* ── "more" toggle for long post text on the wall (#5) ── */
+function toggleHwlMore(id,btn){var el=document.getElementById('hwl-text-'+id);if(!el)return;var clamped=el.classList.toggle('clamp');btn.textContent=clamped?(LANG==='ko'?'더보기':'more'):(LANG==='ko'?'접기':'less');}
 
 /* ── Generic confirm dialog ── */
 function askConfirm(o){
