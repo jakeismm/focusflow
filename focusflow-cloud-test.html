@@ -119,6 +119,23 @@ body{display:flex;justify-content:center;min-height:100vh;}
 .emoji-opt.sel{border-color:var(--color-accent);background:var(--color-accent-bg);}
 .grp-chip{border:1.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);border-radius:99px;padding:6px 13px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-sans);}
 .grp-chip.sel{border-color:var(--color-accent);background:var(--color-accent-bg);color:var(--color-accent);}
+/* ── Richer no-media session tile (stat card) ── */
+.hw-statcover{width:100%;height:100%;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:12px 13px;overflow:hidden;}
+.hw-stat-bg{position:absolute;right:-14px;bottom:-16px;font-size:78px;line-height:1;opacity:0.16;}
+.hw-stat-main{position:relative;z-index:1;display:flex;flex-direction:column;width:100%;}
+.hw-stat-cat{font-size:11px;font-weight:700;opacity:0.85;display:flex;align-items:center;gap:4px;margin-bottom:auto;}
+.hw-stat-big{font-size:27px;font-weight:800;letter-spacing:-0.02em;line-height:1;margin-top:10px;}
+.hw-stat-sub{font-size:11px;font-weight:600;opacity:0.72;margin-top:3px;}
+.home-wall.size-s .hw-stat-big{font-size:18px;}
+.home-wall.size-s .hw-stat-cat,.home-wall.size-s .hw-stat-sub{font-size:9px;}
+.home-wall.size-s .hw-stat-bg{font-size:52px;}
+.home-wall.size-l .hw-stat-big{font-size:38px;}
+.hw-statvis{position:absolute;top:8px;right:9px;z-index:2;font-size:12px;opacity:0.55;}
+/* ── Multi-select ── */
+.hw-tile.hw-sel-on,.hw-card.hw-sel-on{outline:3px solid var(--color-accent);outline-offset:-3px;}
+.hw-select{position:absolute;top:7px;left:8px;z-index:3;font-size:22px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.5);line-height:1;}
+.hw-select.on{color:var(--color-accent);}
+.hw-card .hw-select{top:10px;left:11px;}
 .hw-statcover{display:flex !important;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px;}
 </style>
 </head>
@@ -596,6 +613,8 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
 </div></div>
 <div class="modal-bg" id="twomin-done-modal"><div class="modal"><div class="modal-icon">⚡</div><div style="font-size:18px;font-weight:800;margin-bottom:6px;" data-i18n="twomin_done_title">Nice — 2 minutes done!</div><div style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:18px;" data-i18n="twomin_done_sub">You showed up. That's the whole win. Want to keep the momentum going?</div><button class="btn-main" onclick="twoMinKeepGoing()" style="margin-bottom:8px;"><span data-i18n="twomin_keep">Keep going</span></button><button class="btn-outline" onclick="twoMinFinish()"><span data-i18n="twomin_finish">Finish & log it</span></button></div></div>
 <div class="modal-bg" id="daystart-modal"><div class="modal" style="text-align:left;"><div style="font-size:18px;font-weight:800;margin-bottom:4px;" data-i18n="set_daystart">Journal day starts at</div><div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:14px;" data-i18n="daystart_help">Pick when your day rolls over. A late-night session before this hour counts toward the previous day.</div><div id="daystart-options" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;"></div><button class="btn-outline" onclick="closeModal('daystart-modal')"><span data-i18n="conflict_keep">Close</span></button></div></div>
+<div class="modal-bg" id="lockdelay-modal"><div class="modal" style="text-align:left;"><div style="font-size:18px;font-weight:800;margin-bottom:4px;" id="lockdelay-modal-title">Auto-lock after</div><div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:14px;" id="lockdelay-modal-sub">How long after you leave the app before it locks.</div><div id="lockdelay-options" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;"></div><button class="btn-outline" onclick="closeModal('lockdelay-modal')" id="lockdelay-close">Close</button></div></div>
+<div class="modal-bg" id="gen-confirm-modal"><div class="modal"><div class="modal-icon" id="gconf-icon">⚠️</div><div style="font-size:16px;font-weight:600;margin-bottom:7px;" id="gconf-title"></div><div style="font-size:14px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:18px;" id="gconf-body"></div><button class="btn-main" id="gconf-yes" style="margin-bottom:8px;"></button><button class="btn-outline" id="gconf-no" onclick="closeModal('gen-confirm-modal')"></button></div></div>
 <div class="modal-bg" id="import-modal"><div class="modal"><div class="modal-icon">📥</div><div style="font-size:18px;font-weight:800;margin-bottom:6px;" data-i18n="import_title">Restore from backup?</div><div id="import-sub" style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:18px;"></div><button class="btn-main" onclick="confirmImport()" style="margin-bottom:8px;"><span data-i18n="import_confirm">Restore</span></button><button class="btn-outline" onclick="closeModal('import-modal');_importPending=null;"><span data-i18n="conflict_keep">Cancel</span></button></div></div>
 <div class="modal-bg" id="session-conflict-modal"><div class="modal"><div class="modal-icon">⏱️</div><div style="font-size:16px;font-weight:600;margin-bottom:7px;" id="scm-title" data-i18n="conflict_title">A session is already running</div><div style="font-size:14px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:18px;" id="scm-sub" data-i18n="conflict_sub">You already have a focus session in progress. You can only run one at a time.</div><button class="btn-main" onclick="resolveConflict()" style="margin-bottom:8px;" id="scm-confirm" data-i18n="conflict_stop">Stop it &amp; start the new one</button><button class="btn-outline" onclick="closeModal('session-conflict-modal')" id="scm-keep" data-i18n="conflict_keep">Keep the current one</button></div></div>
 <div class="modal-bg" id="danger-modal"><div class="modal"><div class="modal-icon">⚠️</div><div style="font-size:16px;font-weight:500;margin-bottom:7px;" id="dm-title">Delete?</div><div style="font-size:14px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:18px;" id="dm-sub"></div><button class="btn-end" onclick="execDanger()" style="margin-bottom:8px;">Confirm delete</button><button class="btn-outline" onclick="closeModal('danger-modal')">Cancel</button></div></div>
@@ -759,6 +778,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
         <button class="wall-size-btn active" id="wsz-m" onclick="setWallSize('m')" aria-label="Medium"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></button>
         <button class="wall-size-btn" id="wsz-l" onclick="setWallSize('l')" aria-label="Large"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></button>
         <button class="wall-size-btn" id="wsz-tl" onclick="setWallMode('timeline')" aria-label="Timeline" style="margin-left:3px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="5" cy="6" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="6" x2="20" y2="6"/><circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="12" x2="20" y2="12"/><circle cx="5" cy="18" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="18" x2="20" y2="18"/></svg></button>
+        <button class="wall-size-btn" id="wsz-select" onclick="toggleWallSelectMode()" aria-label="Select" style="margin-left:6px;"><i class="ti ti-circle-check" style="font-size:15px;"></i></button>
       </div>
     </div>
     <div class="home-wall size-m" id="wall-grid" style="padding-bottom:18px;"></div>
@@ -975,7 +995,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
     <div class="vis-toggle" style="margin-bottom:14px;"><button class="vis-btn sel" id="end-vis-pub" onclick="setEndVis('public')"><i class="ti ti-world" style="font-size:14px;vertical-align:-2px;margin-right:2px;"></i>Public</button><button class="vis-btn" id="end-vis-priv" onclick="setEndVis('private')"><i class="ti ti-lock" style="font-size:14px;vertical-align:-2px;margin-right:2px;"></i>Only me</button></div>
     <div id="end-group-row" style="display:none;margin-bottom:14px;"><div class="field-label" id="end-group-label">Share to group</div><div id="end-group-pick" style="display:flex;gap:7px;flex-wrap:wrap;"></div></div>
     <button class="btn-main" onclick="submitSessionPost()" style="margin-bottom:7px;">Post &amp; finish</button>
-    <button class="btn-outline" onclick="skipPost()">Skip &amp; finish</button>
+    <button class="btn-outline" onclick="skipPost()">End without posting</button>
   </div>
 </div>
 
@@ -1169,7 +1189,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
     <div class="menu-section-label" data-i18n="set_security">Security</div>
     <div class="menu-item"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-shield-lock" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="set_applock">App lock (PIN)</div><div class="menu-item-sub" data-i18n="set_applock_sub">Require a PIN to open the app</div></div><button class="toggle" id="applock-toggle" onclick="toggleAppLock()"></button></div>
     <div class="menu-item" id="bio-row" style="display:none;"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-fingerprint" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="set_bio">Biometric unlock</div><div class="menu-item-sub" data-i18n="set_bio_sub">Use fingerprint / face when available</div></div><button class="toggle" id="bio-toggle" onclick="toggleBio()"></button></div>
-    <div class="menu-item" id="lockdelay-row" style="display:none;" onclick="cycleLockDelay()"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-clock" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="set_autolock">Auto-lock</div><div class="menu-item-sub" data-i18n="set_autolock_sub">Lock after leaving the app</div></div><span id="lockdelay-val" style="font-size:14px;font-weight:600;color:var(--color-text-secondary);"></span></div>
+    <div class="menu-item" id="lockdelay-row" style="display:none;" onclick="openLockDelayPicker()"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-clock" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="set_autolock">Auto-lock</div><div class="menu-item-sub" data-i18n="set_autolock_sub">Lock after leaving the app</div></div><span id="lockdelay-val" style="font-size:14px;font-weight:600;color:var(--color-text-secondary);"></span></div>
     <div class="menu-section-label" data-i18n="set_backup">Backup</div>
     <div class="menu-item" onclick="showToast(LANG==='ko'?'정식 버전에서 제공될 기능이에요':'Coming in the full release')"><div class="menu-icon-box" style="background:var(--color-accent-bg);"><i class="ti ti-file-text" style="color:var(--color-accent);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="set_exportdoc">Download as document</div><div class="menu-item-sub" data-i18n="set_exportdoc_sub">Word doc + photos by date · coming soon</div></div><span style="font-size:11px;font-weight:700;color:var(--color-accent);background:var(--color-accent-bg);padding:3px 8px;border-radius:99px;" data-i18n="soon_badge">SOON</span></div>
     <div class="menu-item" onclick="exportData()"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-download" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="set_export">Export my data</div><div class="menu-item-sub" data-i18n="set_export_sub">Save a backup file of everything</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
@@ -1263,6 +1283,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
     </div>
   </div>
 </div>
+<div id="wall-select-bar" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--color-background-primary);border-top:0.5px solid var(--color-border-tertiary);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));align-items:center;gap:10px;box-shadow:0 -2px 14px rgba(0,0,0,0.10);"><button class="ib" onclick="exitWallSelect()" aria-label="Cancel"><i class="ti ti-x"></i></button><span id="wall-select-count" style="font-size:14px;font-weight:700;flex:1;">0</span><button class="btn-sm" onclick="wallShareSelected()"><i class="ti ti-share" style="font-size:14px;vertical-align:-2px;margin-right:3px;"></i><span id="wsel-share">Share</span></button><button class="btn-sm" style="color:#C0392B;border-color:#C0392B;" onclick="wallDeleteSelected()"><i class="ti ti-trash" style="font-size:14px;vertical-align:-2px;margin-right:3px;"></i><span id="wsel-del">Delete</span></button></div>
 <div class="global-nav" id="global-nav" style="display:none;">
   <button class="gnav-btn active" id="gnav-home" onclick="go('s-home')"><div class="gnav-icon"><i class="ti ti-home"></i></div><span data-i18n="nav_home">Home</span></button>
   <button class="gnav-btn" id="gnav-session" onclick="_navSession()"><div class="gnav-icon"><i class="ti ti-player-play"></i></div><span data-i18n="nav_session">Session</span></button>
@@ -2042,7 +2063,7 @@ const ROOT_SCREENS=['s-home','s-onboard'];
 const NAV_ROOTS=['s-home','s-step1','s-discover','s-buddies','s-menu'];
 let navStack=[];
 let _suppressHistory=false;
-function _coreGo(id){if(id!=='s-level-complete'&&typeof stopAlarm==='function')stopAlarm();const _prevActive=document.querySelector('.screen.active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');if(_prevActive&&_prevActive.id!==id)haptic('navigate');closeAttachMenu();const map={'s-home':'gnav-home','s-step1':'gnav-session','s-step2':'gnav-session','s-step3':'gnav-session','s-timer':'gnav-session','s-discover':'gnav-discover','s-tag-feed':'gnav-discover','s-user-profile':'gnav-discover','s-group':'gnav-discover','s-group-create':'gnav-discover','s-buddies':'gnav-buddies','s-buddy-feed':'gnav-buddies','s-menu':'gnav-menu','s-messages':'gnav-menu','s-msg-thread':'gnav-menu','s-settings':'gnav-home','s-badges':'gnav-home'};document.querySelectorAll('.gnav-btn').forEach(b=>b.classList.remove('active'));const navId=map[id];if(navId&&document.getElementById(navId))document.getElementById(navId).classList.add('active');if(id==='s-discover'){renderDiscover();discOnEnter();}if(id==='s-buddies'){if(cloudSession()){const el=document.getElementById('buddy-list');if(el)el.innerHTML='<div style="padding:24px 0;text-align:center;color:var(--color-text-tertiary);"><div class="spinner" style="margin:0 auto;"></div></div>';loadCloudBuddies().then(ok=>{if(document.getElementById('s-buddies').classList.contains('active'))renderCloudBuddyList();});}else{renderBuddyList();}}if(id==='s-home'){updateProfileBadges();applyProfilePhoto&&applyProfilePhoto();renderIdentity&&renderIdentity();renderIntentions&&renderIntentions();renderRecovery&&renderRecovery();if(homeWallMode==='timeline')setWallMode('timeline');if(cloudSession()){loadCloudHomeStats();loadCloudPosts().then(ok=>{if(ok&&document.getElementById('s-home').classList.contains('active')){renderWall();updateProfileBadges();renderIdentity&&renderIdentity();if(homeWallMode==='timeline')renderTimeline();}});}}if(id==='s-settings'&&typeof renderEndSounds==='function'){renderEndSounds();updateDayStartLabel&&updateDayStartLabel();updateLockSettingUI&&updateLockSettingUI();}
+function _coreGo(id){if(id!=='s-level-complete'&&typeof stopAlarm==='function')stopAlarm();if(window.wallSelectMode&&id!=='s-home'){window.wallSelectMode=false;if(window.wallSelected&&window.wallSelected.clear)window.wallSelected.clear();var _wsb=document.getElementById('wall-select-bar');if(_wsb)_wsb.style.display='none';var _wsel=document.getElementById('wsz-select');if(_wsel)_wsel.className='wall-size-btn';}const _prevActive=document.querySelector('.screen.active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');if(_prevActive&&_prevActive.id!==id)haptic('navigate');closeAttachMenu();const map={'s-home':'gnav-home','s-step1':'gnav-session','s-step2':'gnav-session','s-step3':'gnav-session','s-timer':'gnav-session','s-discover':'gnav-discover','s-tag-feed':'gnav-discover','s-user-profile':'gnav-discover','s-group':'gnav-discover','s-group-create':'gnav-discover','s-buddies':'gnav-buddies','s-buddy-feed':'gnav-buddies','s-menu':'gnav-menu','s-messages':'gnav-menu','s-msg-thread':'gnav-menu','s-settings':'gnav-home','s-badges':'gnav-home'};document.querySelectorAll('.gnav-btn').forEach(b=>b.classList.remove('active'));const navId=map[id];if(navId&&document.getElementById(navId))document.getElementById(navId).classList.add('active');if(id==='s-discover'){renderDiscover();discOnEnter();}if(id==='s-buddies'){if(cloudSession()){const el=document.getElementById('buddy-list');if(el)el.innerHTML='<div style="padding:24px 0;text-align:center;color:var(--color-text-tertiary);"><div class="spinner" style="margin:0 auto;"></div></div>';loadCloudBuddies().then(ok=>{if(document.getElementById('s-buddies').classList.contains('active'))renderCloudBuddyList();});}else{renderBuddyList();}}if(id==='s-home'){updateProfileBadges();applyProfilePhoto&&applyProfilePhoto();renderIdentity&&renderIdentity();renderIntentions&&renderIntentions();renderRecovery&&renderRecovery();if(homeWallMode==='timeline')setWallMode('timeline');if(cloudSession()){loadCloudHomeStats();loadCloudPosts().then(ok=>{if(ok&&document.getElementById('s-home').classList.contains('active')){renderWall();updateProfileBadges();renderIdentity&&renderIdentity();if(homeWallMode==='timeline')renderTimeline();}});}}if(id==='s-settings'&&typeof renderEndSounds==='function'){renderEndSounds();updateDayStartLabel&&updateDayStartLabel();updateLockSettingUI&&updateLockSettingUI();}
   /* content-settled cue (Toss-style) for the data-heavy screens */
   if(_prevActive&&_prevActive.id!==id&&['s-home','s-discover','s-buddies','s-badges','s-stats'].includes(id)){clearTimeout(_pageReadyT);_pageReadyT=setTimeout(()=>haptic('pageReady'),120);}
   /* floating Post button: visible on browsing screens, hidden during auth/timer/editor */
@@ -2250,9 +2271,9 @@ function intervalDone(){playFocusEndChime();haptic('intervalEnd');sessionInterva
 function restDone(){playRestEndChime();haptic('restEnd');isRest=false;totalSecs=focusMins*60;remaining=totalSecs;setPhaseUI();document.getElementById('big-timer').textContent=fmt(remaining);if(timerOverlayPinned)updateTimerOverlay();if(autoplay)phaseTimeout=setTimeout(startTicking,800);else{setIcon('play-icon','ti-player-play');startAlarmLoop();var _sb=document.getElementById('stop-alarm-btn');if(_sb)_sb.style.display='inline-flex';}}
 function resetTimer(){clearInterval(ticker);running=false;remaining=totalSecs;document.getElementById('big-timer').textContent=fmt(remaining);setIcon('play-icon','ti-player-play');updateTimerOverlay();}
 function skipPhase(){clearInterval(ticker);running=false;if(!isRest)intervalDone();else restDone();}
-function confirmEnd(){clearInterval(ticker);running=false;document.getElementById('ecm-sub').textContent=sessionIntervals>0?'You\'ve completed '+sessionIntervals+' interval'+(sessionIntervals!==1?'s':'')+'.':'No intervals completed.';showModal('end-confirm-modal');}
+function confirmEnd(){if(typeof stopAlarm==='function')stopAlarm();clearInterval(ticker);running=false;document.getElementById('ecm-sub').textContent=sessionIntervals>0?'You\'ve completed '+sessionIntervals+' interval'+(sessionIntervals!==1?'s':'')+'.':'No intervals completed.';showModal('end-confirm-modal');}
 function confirmEndSync(){if(syncRunning){clearInterval(syncTicker);syncRunning=false;setIcon('sync-play-icon','ti-player-play');}showModal('end-sync-modal');}
-function doEndSession(){closeModal('end-confirm-modal');clearInterval(ticker);clearTimeout(phaseTimeout);running=false;document.getElementById('timer-overlay').classList.remove('show');if(sessionIntervals>0)openLevelComplete();else{goRoot('s-home');}}
+function doEndSession(){if(typeof stopAlarm==='function')stopAlarm();closeModal('end-confirm-modal');clearInterval(ticker);clearTimeout(phaseTimeout);running=false;document.getElementById('timer-overlay').classList.remove('show');if(sessionIntervals>0)openLevelComplete();else{goRoot('s-home');}}
 function showNudge(){const b=document.getElementById('nudge-banner');b.classList.add('show');clearTimeout(b._to);b._to=setTimeout(()=>dismissNudge(),8000);}
 function dismissNudge(){document.getElementById('nudge-banner').classList.remove('show');nudgeDismissed=true;}
 function openSessionEnd(){document.getElementById('end-title').textContent=sessionIntervals>0?'Great session!':'Session ended';document.getElementById('end-stats').textContent=sessionIntervals+' intervals · '+fmtMins(sessionIntervals*focusMins)+' focused';document.getElementById('end-xp').textContent='+'+(xpTotal-sessionStartXP)+' XP';document.getElementById('end-journal').value='';mediaData.end=[];mediaUseExif.end=true;renderMediaPreview('end');bookResult=null;const br=document.getElementById('book-result');if(br){br.style.display='none';br.innerHTML='';}const bar=document.getElementById('book-analyze-row');if(bar)bar.style.display='none';endVis='public';setEndVis('public');window._endGroup=null;renderEndGroupPicker();document.querySelectorAll('#end-media-row .media-btn').forEach(b=>b.classList.remove('selected'));document.querySelectorAll('#end-media-row .media-btn')[2].classList.add('selected');go('s-session-end');}
@@ -2445,7 +2466,7 @@ function renderBookResult(){
 }
 function toggleToc(i){if(!bookResult)return;bookResult.toc[i].done=!bookResult.toc[i].done;renderBookResult();}
 function setEndVis(v){endVis=v;document.getElementById('end-vis-pub').className='vis-btn'+(v==='public'?' sel':'');document.getElementById('end-vis-priv').className='vis-btn'+(v==='private'?' sel':'');}
-function submitSessionPost(){if(pauseStartedAt&&sessionPauses.length){const dur=Math.round((Date.now()-pauseStartedAt)/1000);sessionPauses[sessionPauses.length-1].durationSec=dur;sessionPauseTotal+=dur;pauseStartedAt=null;}const c=cats.find(x=>x.id===selCatId);const xpEarned=Math.max(0,xpTotal-sessionStartXP);const list=mediaData.end||[];const first=list[0]||null;const postDate=(mediaUseExif.end&&first&&first.captureTime)?new Date(first.captureTime):new Date();const p={id:'p'+Date.now(),catName:c?c.name:'Focus',catIcon:c?c.icon:'ti-pencil',catColor:c?c.color.bg:'#E6F1FB',catTextColor:c?c.color.text:'#0C447C',catDot:c?c.color.dot:'#378ADD',tags:[...selTags],intervals:sessionIntervals,focusMins,restMins,focusTotalMin:sessionIntervals*focusMins,xpEarned,pauses:JSON.parse(JSON.stringify(sessionPauses)),pauseCount:sessionPauses.length,pauseTotalSec:sessionPauseTotal,journal:document.getElementById('end-journal').value.trim(),mediaList:list.map(m=>({type:m.type,url:m.url})),media:first?first.type:'none',mediaUrl:first?first.url:null,vis:endVis,date:postDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}),time:postDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),levelBefore:getLevel(sessionStartXP),levelAfter:getLevel(xpTotal),_dateObj:postDate,book:bookResult?JSON.parse(JSON.stringify(bookResult)):null};if(window._endGroup){p.groupId=window._endGroup.id;p.groupName=window._endGroup.name;}posts.unshift(p);if(cloudSession())cloudSavePost(p);postsShared++;mediaData.end=[];mediaUseExif.end=true;bookResult=null;const _prevBest=personalBest;recordSession();const _wasRecord=p.intervals>_prevBest;checkBadges(false);renderWall();updateProfileBadges();persist();goRoot('s-home');showToast('Session posted!','success');coachAfterSession(p,_wasRecord,_prevBest);persist();}
+function submitSessionPost(){if(pauseStartedAt&&sessionPauses.length){const dur=Math.round((Date.now()-pauseStartedAt)/1000);sessionPauses[sessionPauses.length-1].durationSec=dur;sessionPauseTotal+=dur;pauseStartedAt=null;}const c=cats.find(x=>x.id===selCatId);const xpEarned=Math.max(0,xpTotal-sessionStartXP);const list=mediaData.end||[];const first=list[0]||null;const postDate=(mediaUseExif.end&&first&&first.captureTime)?new Date(first.captureTime):new Date();const p={id:'p'+Date.now(),catName:c?c.name:'Focus',catIcon:c?c.icon:'ti-pencil',catColor:c?c.color.bg:'#E6F1FB',catTextColor:c?c.color.text:'#0C447C',catDot:c?c.color.dot:'#378ADD',tags:[...selTags],intervals:sessionIntervals,focusMins,restMins,focusTotalMin:sessionIntervals*focusMins,xpEarned,pauses:JSON.parse(JSON.stringify(sessionPauses)),pauseCount:sessionPauses.length,pauseTotalSec:sessionPauseTotal,journal:document.getElementById('end-journal').value.trim(),mediaList:list.map(m=>({type:m.type,url:m.url})),media:first?first.type:'none',mediaUrl:first?first.url:null,vis:endVis,date:postDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}),time:postDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),levelBefore:getLevel(sessionStartXP),levelAfter:getLevel(xpTotal),_dateObj:postDate,book:bookResult?JSON.parse(JSON.stringify(bookResult)):null};if(window._endGroup){p.groupId=window._endGroup.id;p.groupName=window._endGroup.name;if(window._endGroup.name)p.tags=[...new Set([...(p.tags||[]),window._endGroup.name])];}posts.unshift(p);if(cloudSession())cloudSavePost(p);postsShared++;mediaData.end=[];mediaUseExif.end=true;bookResult=null;const _prevBest=personalBest;recordSession();const _wasRecord=p.intervals>_prevBest;checkBadges(false);renderWall();updateProfileBadges();persist();goRoot('s-home');showToast('Session posted!','success');coachAfterSession(p,_wasRecord,_prevBest);persist();}
 function coachAfterSession(p,wasRecord,prevBest){
   if(!coachAdded)return;/* only if the user opted in */
   const L=COACH_LINES[LANG]||COACH_LINES.en;
@@ -2469,7 +2490,7 @@ function coachAfterSession(p,wasRecord,prevBest){
   /* gentle nudge so the user notices */
   setTimeout(()=>showToast(LANG==='ko'?'코치가 메시지를 보냈어요 💬':'Your coach sent a message 💬','success'),900);
 }
-function skipPost(){recordSession();goRoot('s-home');}
+function skipPost(){if(typeof stopAlarm==='function')stopAlarm();mediaData.end=[];window._endGroup=null;recordSession();goRoot('s-home');}
 function totalFocusMins(){return posts.reduce((s,p)=>s+(p.focusTotalMin||0),0)+(sessionRecorded?0:sessionIntervals*focusMins);}
 function catCount(name){return catCounts[name]||0;}
 function maxIntervalMins(){return Math.max(focusMins,...posts.map(p=>p.focusMins||0),0);}
@@ -2486,6 +2507,7 @@ function recordSession(){if(sessionRecorded)return false;sessionRecorded=true;tw
   if(hr<7)earlyBirdCount++;if(hr>=0&&hr<5)nightOwlCount++;if(dow===0||dow===6)weekendCount++;
   document.getElementById('h-sessions').textContent=totalSessions;document.getElementById('h-record').textContent=personalBest>0?fmtMins(personalBest*focusMins):'—';document.getElementById('p-sessions').textContent=totalSessions;document.getElementById('home-streak-val').textContent=streakDays;pendingBadgeUnlocks=[];checkBadges(true);persist();return wasRecord;}
 function openLevelComplete(){
+  if(typeof stopAlarm==='function')stopAlarm();
   clearInterval(ticker);clearTimeout(phaseTimeout);running=false;releaseWakeLock();document.getElementById('timer-overlay').classList.remove('show');
   playSessionEndSound();haptic('celebrate');
   const wasRecord=recordSession();
@@ -2563,6 +2585,11 @@ function wallTileHTML(p){
   const dateStr=p._dateObj?new Date(p._dateObj).toLocaleDateString(LANG==='ko'?'ko-KR':'en-US',{month:'short',day:'numeric'}):'';
   const _visI=p.vis==='private'?'ti-lock':(p.vis==='group'?'ti-users':'ti-world');
   const _visName=p.vis==='private'?(LANG==='ko'?'나만':'Only me'):(p.vis==='group'?(LANG==='ko'?'그룹':'Group'):(LANG==='ko'?'공개':'Public'));
+  const _sel=!!window.wallSelectMode;
+  const _isSel=_sel&&window.wallSelected&&window.wallSelected.has(p.id);
+  const _click=_sel?`toggleWallSelect('${p.id}')`:`openPost('${p.id}')`;
+  const _selMark=_sel?`<div class="hw-select${_isSel?' on':''}"><i class="ti ${_isSel?'ti-circle-check-filled':'ti-circle'}"></i></div>`:'';
+  const _selCls=_isSel?' hw-sel-on':'';
   /* ── LARGE: Instagram feed card — media on top (carousel if multiple), text & date BELOW ── */
   if(homeWallSize==='l'){
     let media;
@@ -2574,19 +2601,22 @@ function wallTileHTML(p){
     const tagsLine=(p.tags&&p.tags.length)?`<div class="hwl-tags">${p.tags.slice(0,4).map(t=>'#'+escapeHtml(t)).join(' ')}</div>`:'';
     const body=snippet?`<div class="hwl-text">${snippet}</div>`:'';
     const book=(p.book&&p.book.title)?`<div class="hwl-book"><i class="ti ti-book-2" style="font-size:12px;vertical-align:-2px;"></i> ${escapeHtml(p.book.title)}</div>`:'';
-    return `<div class="hw-card" onclick="openPost('${p.id}')">${media}<div class="hwl-info">${titleLine}${body}${tagsLine}${book}<div class="hwl-date">${dateStr} · <i class="ti ${_visI}" style="font-size:11px;vertical-align:-1px;"></i> ${_visName}</div></div></div>`;
+    return `<div class="hw-card${_selCls}" onclick="${_click}">${_selMark}${media}<div class="hwl-info">${titleLine}${body}${tagsLine}${book}<div class="hwl-date">${dateStr} · <i class="ti ${_visI}" style="font-size:11px;vertical-align:-1px;"></i> ${_visName}</div></div></div>`;
   }
   /* ── SMALL / MEDIUM: compact tile with overlay ── */
-  const textCover=(!list.length&&snippet)?`<div class="hw-textcover"><div class="hw-textcover-quote">"</div><div class="hw-textcover-body">${snippet}</div></div>`:`<div class="hw-cover" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon}" style="font-size:30px;"></i></div>`;
   const first=list[0];
-  const cover=first?(first.type==='video'?`<video src="${first.url}" muted loop playsinline></video>`:`<img src="${first.url}"/>`):textCover;
+  const statCover=`<div class="hw-statcover" style="background:linear-gradient(150deg, ${p.catColor} 0%, var(--color-background-secondary) 135%);color:${p.catTextColor};"><i class="ti ${p.catIcon} hw-stat-bg"></i><div class="hw-stat-main"><div class="hw-stat-cat"><i class="ti ${p.catIcon}" style="font-size:13px;"></i> ${escapeHtml(p.catName)}</div><div class="hw-stat-big">${fmtMins(p.focusTotalMin)}</div><div class="hw-stat-sub">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))} · ${dateStr}</div></div></div>`;
+  const isStat=!first&&!journal;
+  const textCover=(!list.length&&snippet)?`<div class="hw-textcover"><div class="hw-textcover-quote">"</div><div class="hw-textcover-body">${snippet}</div></div>`:`<div class="hw-cover" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon}" style="font-size:30px;"></i></div>`;
+  const cover=first?(first.type==='video'?`<video src="${first.url}" muted loop playsinline></video>`:`<img src="${first.url}"/>`):(isStat?statCover:textCover);
   const multi=list.length>1?`<div class="hw-multi"><i class="ti ti-stack-2" style="font-size:13px;"></i></div>`:'';
   const title=journal?'':escapeHtml(p.catName);
   const meta=journal?dateStr:(fmtMins(p.focusTotalMin)+' · '+p.intervals+(LANG==='ko'?' 인터벌':' int'));
   const tags=(!journal&&p.tags&&p.tags.length)?' · '+escapeHtml(p.tags.slice(0,1).join(', ')):'';
   const capLine=(first&&snippet)?`<div class="hw-cap">${snippet}</div>`:'';
   const locBadge=(first&&p.loc)?`<div class="hw-loc"><i class="ti ti-map-pin" style="font-size:10px;"></i> ${escapeHtml(p.loc)}</div>`:'';
-  return `<div class="hw-tile${(!list.length&&snippet)?' hw-tile-text':''}" onclick="openPost('${p.id}')">${cover}${multi}${locBadge}<div class="hw-grad"></div><div class="hw-summary"><div class="hw-title">${title}${tags}</div><div class="hw-meta"><i class="ti ${_visI}" style="font-size:10px;vertical-align:-1px;"></i> ${meta}</div>${capLine}</div></div>`;
+  const overlay=isStat?`<div class="hw-statvis"><i class="ti ${_visI}"></i></div>`:`<div class="hw-grad"></div><div class="hw-summary"><div class="hw-title">${title}${tags}</div><div class="hw-meta"><i class="ti ${_visI}" style="font-size:10px;vertical-align:-1px;"></i> ${meta}</div>${capLine}</div>`;
+  return `<div class="hw-tile${(!list.length&&snippet)?' hw-tile-text':''}${_selCls}" onclick="${_click}">${cover}${multi}${locBadge}${_selMark}${overlay}</div>`;
 }
 /* lightweight carousel for wall cards (separate id-space from the detail carousel) */
 function wallCarouselHTML(list,pid){
@@ -2634,7 +2664,7 @@ function postStamp(p){if(p._dateObj){const d=(p._dateObj instanceof Date)?p._dat
 function escapeHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function startEditPost(id){editingPostId=id;const p=posts.find(x=>x.id===id);if(!p)return;document.getElementById('post-screen-title').textContent='Edit post';document.getElementById('post-edit-ta').value=p.journal||'';postEditVis=p.vis;setVis(postEditVis);mediaData.post=(p.mediaList&&p.mediaList.length)?p.mediaList.map(m=>({type:m.type,url:m.url,captureTime:null})):(p.mediaUrl?[{type:p.media,url:p.mediaUrl,captureTime:null}]:[]);mediaUseExif.post=false;renderMediaPreview('post');const pr=document.getElementById('post-media-row');if(pr){pr.querySelectorAll('.media-btn').forEach(b=>b.classList.remove('selected'));}document.getElementById('post-delete-btn').style.display='flex';const sc=document.querySelector('#s-post .screen-scroll');if(sc){sc.style.display='flex';sc.style.flexDirection='column';sc.style.overflow='hidden';}const hero=document.querySelector('#s-post .dash-hero');if(hero)hero.style.display='none';document.getElementById('dash-stats-grid').style.display='none';const dtl=document.getElementById('dash-timeline-section');if(dtl)dtl.style.display='none';const dts=document.getElementById('dash-tags-section');if(dts)dts.style.display='none';const js2=document.querySelector('#dash-journal').closest('.dash-section');if(js2)js2.style.display='none';document.getElementById('post-edit-mode').style.display='flex';document.getElementById('post-edit-btn').style.display='none';}
 function setVis(v){postEditVis=v;document.getElementById('vis-pub').className='vis-btn'+(v==='public'?' sel':'');document.getElementById('vis-priv').className='vis-btn'+(v==='private'?' sel':'');}
-function savePost(){const txt=document.getElementById('post-edit-ta').value.trim();const list=mediaData.post||[];if(!txt&&!list.length){showToast('Write something or add a photo first');return;}const first=list[0]||null;if(editingPostId&&editingPostId!=='new'){const p=posts.find(x=>x.id===editingPostId);if(p){p.journal=txt;p.vis=postEditVis;p.mediaList=list.map(m=>({type:m.type,url:m.url}));p.media=first?first.type:'none';p.mediaUrl=first?first.url:null;}mediaData.post=[];renderWall();openPost(editingPostId);showToast('Post updated','success');persist();}else{if(window.postMediaSplit&&list.length>1){var _gp2=window._pendingGroupPost;var _base=Date.now();list.forEach(function(m,i){var d=(mediaUseExif.post&&m.captureTime)?new Date(m.captureTime):new Date(_base+i);var sp={id:'p'+(_base+i),catName:'Post',catIcon:'ti-pencil',catColor:'var(--color-background-secondary)',catTextColor:'var(--color-text-secondary)',catDot:'#888780',tags:[],intervals:0,focusMins:0,restMins:0,focusTotalMin:0,xpEarned:0,journal:(i===0?txt:''),mediaList:[{type:m.type,url:m.url}],media:m.type,mediaUrl:m.url,vis:postEditVis,_dateObj:d,journalOnly:true};if(_gp2){sp.groupId=_gp2.id;sp.groupName=_gp2.name;sp.vis='group';}posts.unshift(sp);if(cloudSession())cloudSavePost(sp);postsShared++;});var _n=list.length;mediaData.post=[];mediaUseExif.post=true;window.postMediaSplit=false;checkBadges(false);renderWall();updateProfileBadges();window._pendingGroupPost=null;if(_gp2){showToast(LANG==='ko'?'그룹에 게시했어요':'Posted to group','success');openGroup(_gp2.id);}else{goRoot('s-home');showToast(LANG==='ko'?(_n+'개 게시물 공유됨'):(_n+' posts shared'),'success');}persist();return;}const id='p'+Date.now();const postDate=(mediaUseExif.post&&first&&first.captureTime)?new Date(first.captureTime):new Date();const _np={id,catName:'Post',catIcon:'ti-pencil',catColor:'var(--color-background-secondary)',catTextColor:'var(--color-text-secondary)',catDot:'#888780',tags:[],intervals:0,focusMins:0,restMins:0,focusTotalMin:0,xpEarned:0,journal:txt,mediaList:list.map(m=>({type:m.type,url:m.url})),media:first?first.type:'none',mediaUrl:first?first.url:null,vis:postEditVis,_dateObj:postDate,journalOnly:true};if(window._pendingGroupPost){_np.groupId=window._pendingGroupPost.id;_np.groupName=window._pendingGroupPost.name;_np.vis='group';}posts.unshift(_np);if(cloudSession())cloudSavePost(_np);postsShared++;mediaData.post=[];mediaUseExif.post=true;checkBadges(false);renderWall();updateProfileBadges();var _gp=window._pendingGroupPost;window._pendingGroupPost=null;if(_gp){showToast(LANG==='ko'?'그룹에 게시했어요':'Posted to group','success');openGroup(_gp.id);}else{goRoot('s-home');showToast('Post shared','success');}persist();}}
+function savePost(){const txt=document.getElementById('post-edit-ta').value.trim();const list=mediaData.post||[];if(!txt&&!list.length){showToast('Write something or add a photo first');return;}const first=list[0]||null;if(editingPostId&&editingPostId!=='new'){const p=posts.find(x=>x.id===editingPostId);if(p){p.journal=txt;p.vis=postEditVis;p.mediaList=list.map(m=>({type:m.type,url:m.url}));p.media=first?first.type:'none';p.mediaUrl=first?first.url:null;}mediaData.post=[];renderWall();openPost(editingPostId);showToast('Post updated','success');persist();}else{if(window.postMediaSplit&&list.length>1){var _gp2=window._pendingGroupPost;var _base=Date.now();list.forEach(function(m,i){var d=(mediaUseExif.post&&m.captureTime)?new Date(m.captureTime):new Date(_base+i);var sp={id:'p'+(_base+i),catName:'Post',catIcon:'ti-pencil',catColor:'var(--color-background-secondary)',catTextColor:'var(--color-text-secondary)',catDot:'#888780',tags:[],intervals:0,focusMins:0,restMins:0,focusTotalMin:0,xpEarned:0,journal:(i===0?txt:''),mediaList:[{type:m.type,url:m.url}],media:m.type,mediaUrl:m.url,vis:postEditVis,_dateObj:d,journalOnly:true};if(_gp2){sp.groupId=_gp2.id;sp.groupName=_gp2.name;sp.vis='group';}posts.unshift(sp);if(cloudSession())cloudSavePost(sp);postsShared++;});var _n=list.length;mediaData.post=[];mediaUseExif.post=true;window.postMediaSplit=false;checkBadges(false);renderWall();updateProfileBadges();window._pendingGroupPost=null;if(_gp2){showToast(LANG==='ko'?'그룹에 게시했어요':'Posted to group','success');openGroup(_gp2.id);}else{goRoot('s-home');showToast(LANG==='ko'?(_n+'개 게시물 공유됨'):(_n+' posts shared'),'success');}persist();return;}const id='p'+Date.now();const postDate=(mediaUseExif.post&&first&&first.captureTime)?new Date(first.captureTime):new Date();const _np={id,catName:'Post',catIcon:'ti-pencil',catColor:'var(--color-background-secondary)',catTextColor:'var(--color-text-secondary)',catDot:'#888780',tags:[],intervals:0,focusMins:0,restMins:0,focusTotalMin:0,xpEarned:0,journal:txt,mediaList:list.map(m=>({type:m.type,url:m.url})),media:first?first.type:'none',mediaUrl:first?first.url:null,vis:postEditVis,_dateObj:postDate,journalOnly:true};if(window._pendingGroupPost){_np.groupId=window._pendingGroupPost.id;_np.groupName=window._pendingGroupPost.name;_np.vis='group';_np.tags=window._pendingGroupPost.name?[window._pendingGroupPost.name]:[];}posts.unshift(_np);postsShared++;mediaData.post=[];mediaUseExif.post=true;checkBadges(false);renderWall();updateProfileBadges();var _gp=window._pendingGroupPost;window._pendingGroupPost=null;if(_gp){if(cloudSession()){showToast(LANG==='ko'?'그룹에 게시하는 중…':'Posting to group…');cloudSavePost(_np).then(function(){showToast(LANG==='ko'?'그룹에 게시했어요':'Posted to group','success');openGroup(_gp.id);});}else{showToast(LANG==='ko'?'그룹에 게시했어요':'Posted to group','success');openGroup(_gp.id);}}else{if(cloudSession())cloudSavePost(_np);goRoot('s-home');showToast('Post shared','success');}persist();}}
 function cancelEditPost(){mediaData.post=[];if(editingPostId&&editingPostId!=='new')openPost(editingPostId);else go('s-home');}
 function deletePost(){posts=posts.filter(x=>x.id!==editingPostId);mediaData.post=[];renderWall();go('s-home');showToast('Post deleted');persist();}
 function openNewPost(){window._pendingGroupPost=null;window.postMediaSplit=false;var _sr0=document.getElementById('post-split-row');if(_sr0)_sr0.style.display='none';editingPostId='new';document.getElementById('post-screen-title').textContent='New post';document.getElementById('post-edit-ta').value='';document.getElementById('post-edit-ta').placeholder="What's on your mind?";postEditVis='public';setVis('public');mediaData.post=[];mediaUseExif.post=true;renderMediaPreview('post');const pr=document.getElementById('post-media-row');if(pr){pr.querySelectorAll('.media-btn').forEach(b=>b.classList.remove('selected'));}
@@ -3232,6 +3262,81 @@ function updatePostSplitRow(){
   else { row.style.display='none'; window.postMediaSplit=false; }
 }
 
+/* ── Generic confirm dialog ── */
+function askConfirm(o){
+  o=o||{};
+  var ic=document.getElementById('gconf-icon'); if(ic)ic.textContent=o.icon||'\u26A0\uFE0F';
+  var t=document.getElementById('gconf-title'); if(t)t.textContent=o.title||'';
+  var b=document.getElementById('gconf-body'); if(b)b.textContent=o.body||'';
+  var y=document.getElementById('gconf-yes'); if(y){y.textContent=o.yes||_t('Confirm','\uD655\uC778');y.style.background=o.danger?'#C0392B':'';y.style.color=o.danger?'#fff':'';y.onclick=function(){closeModal('gen-confirm-modal');if(o.onYes)o.onYes();};}
+  var n=document.getElementById('gconf-no'); if(n)n.textContent=o.no||_t('Cancel','\uCDE8\uC18C');
+  showModal('gen-confirm-modal');
+}
+
+/* ── Auto-lock delay picker ── */
+function openLockDelayPicker(){
+  var opts=[0,30000,60000,300000,900000];
+  var cur=(lockCfg&&typeof lockCfg.autolockMs==='number')?lockCfg.autolockMs:60000;
+  var t=document.getElementById('lockdelay-modal-title'); if(t)t.textContent=_t('Auto-lock after','\uC790\uB3D9 \uC7A0\uAE08 \uC2DC\uAC04');
+  var s=document.getElementById('lockdelay-modal-sub'); if(s)s.textContent=_t('How long after you leave the app before it locks.','\uC571\uC744 \uB5A0\uB09C \uD6C4 \uC7A0\uAE30\uAE30\uAE4C\uC9C0\uC758 \uC2DC\uAC04\uC774\uC5D0\uC694.');
+  var cl=document.getElementById('lockdelay-close'); if(cl)cl.textContent=_t('Close','\uB2EB\uAE30');
+  var wrap=document.getElementById('lockdelay-options');
+  if(wrap)wrap.innerHTML=opts.map(function(ms){return '<button class="btn-sm'+(ms===cur?' active':'')+'" style="padding:11px 6px;" onclick="setLockDelay('+ms+')">'+lockDelayLabel(ms)+'</button>';}).join('');
+  showModal('lockdelay-modal');
+}
+function setLockDelay(ms){
+  lockCfg=lockCfg||{}; lockCfg.autolockMs=ms; if(typeof saveLockCfg==='function')saveLockCfg(lockCfg);
+  var lv=document.getElementById('lockdelay-val'); if(lv)lv.textContent=lockDelayLabel(ms);
+  if(typeof haptic==='function')haptic('navigate');
+  closeModal('lockdelay-modal');
+}
+
+/* ── Multi-select on the activity wall ── */
+window.wallSelectMode=false; window.wallSelected=new Set();
+function toggleWallSelectMode(){ window.wallSelectMode=!window.wallSelectMode; window.wallSelected=new Set(); _syncWallSelectUI(); if(typeof renderWall==='function')renderWall(); }
+function exitWallSelect(){ window.wallSelectMode=false; window.wallSelected=new Set(); _syncWallSelectUI(); if(typeof renderWall==='function')renderWall(); }
+function toggleWallSelect(id){ if(!window.wallSelected)window.wallSelected=new Set(); if(window.wallSelected.has(id))window.wallSelected.delete(id); else window.wallSelected.add(id); _syncWallSelectUI(); if(typeof renderWall==='function')renderWall(); if(typeof haptic==='function')haptic('navigate'); }
+function _syncWallSelectUI(){
+  var bar=document.getElementById('wall-select-bar'); if(bar)bar.style.display=window.wallSelectMode?'flex':'none';
+  var n=window.wallSelected?window.wallSelected.size:0;
+  var c=document.getElementById('wall-select-count'); if(c)c.textContent=(LANG==='ko'?(n+'\uAC1C \uC120\uD0DD\uB428'):(n+' selected'));
+  var sb=document.getElementById('wsz-select'); if(sb)sb.className='wall-size-btn'+(window.wallSelectMode?' active':'');
+  var sh=document.getElementById('wsel-share'); if(sh)sh.textContent=_t('Share','\uACF5\uC720');
+  var dl=document.getElementById('wsel-del'); if(dl)dl.textContent=_t('Delete','\uC0AD\uC81C');
+}
+function wallDeleteSelected(){
+  var ids=[...(window.wallSelected||[])];
+  if(!ids.length){showToast(_t('Nothing selected','\uC120\uD0DD\uB41C \uAC8C \uC5C6\uC5B4\uC694'));return;}
+  askConfirm({icon:'\uD83D\uDDD1\uFE0F',title:_t('Delete selected?','\uC120\uD0DD \uD56D\uBAA9\uC744 \uC0AD\uC81C\uD560\uAE4C\uC694?'),body:(LANG==='ko'?(ids.length+'\uAC1C\uC758 \uAC8C\uC2DC\uBB3C\uC744 \uC0AD\uC81C\uD574\uC694. \uB418\uB3CC\uB9B4 \uC218 \uC5C6\uC5B4\uC694.'):(ids.length+' post'+(ids.length!==1?'s':'')+' will be deleted. This can\u2019t be undone.')),yes:_t('Delete','\uC0AD\uC81C'),danger:true,onYes:_doWallDelete});
+}
+function _doWallDelete(){
+  var ids=[...(window.wallSelected||[])];
+  ids.forEach(function(id){
+    var p=posts.find(function(x){return x.id===id;});
+    if(!p)return;
+    if(cloudSession()){
+      var rid=(p._cloud&&id.indexOf('c_')===0)?id.slice(2):(p.cloudId||null);
+      if(rid){try{window.ffSB.from('posts').delete().eq('id',rid);}catch(e){}}
+    }
+  });
+  posts=posts.filter(function(x){return ids.indexOf(x.id)<0;});
+  window.wallSelected=new Set(); window.wallSelectMode=false; _syncWallSelectUI();
+  if(typeof renderWall==='function')renderWall(); if(typeof updateProfileBadges==='function')updateProfileBadges(); if(typeof persist==='function')persist();
+  showToast(LANG==='ko'?(ids.length+'\uAC1C \uC0AD\uC81C\uB428'):(ids.length+' deleted'),'success');
+}
+async function wallShareSelected(){
+  var ids=[...(window.wallSelected||[])];
+  if(!ids.length){showToast(_t('Nothing selected','\uC120\uD0DD\uB41C \uAC8C \uC5C6\uC5B4\uC694'));return;}
+  var sel=posts.filter(function(x){return ids.indexOf(x.id)>=0;});
+  var text=sel.map(function(p){var d=p._dateObj?new Date(p._dateObj).toLocaleDateString():'';var head=(p.intervals>0)?(p.catName+' \u00B7 '+fmtMins(p.focusTotalMin)):(LANG==='ko'?'\uAE30\uB85D':'Note');return '\u2022 '+head+(d?(' ('+d+')'):'')+(p.journal?('\n  '+p.journal):'');}).join('\n');
+  try{
+    if(navigator.share){ await navigator.share({title:'FocusFlow', text:text}); }
+    else if(navigator.clipboard){ await navigator.clipboard.writeText(text); showToast(_t('Copied to clipboard','\uD074\uB9BD\uBCF4\uB4DC\uC5D0 \uBCF5\uC0AC\uB428'),'success'); }
+    else { showToast(_t('Sharing not supported here','\uC5EC\uAE30\uC120 \uACF5\uC720\uAC00 \uC548 \uB3FC\uC694')); return; }
+  }catch(e){}
+  exitWallSelect();
+}
+
 function _ko(){return LANG==='ko';}
 function _t(en,ko){return _ko()?ko:en;}
 function _cloudOn(){return typeof cloudSession==='function' && cloudSession();}
@@ -3495,7 +3600,11 @@ async function joinCurrentGroup(){
   if(!_cloudOn()){showToast(_t('Sign in to join groups','\uB85C\uADF8\uC778 \uD6C4 \uCC38\uC5EC\uD560 \uC218 \uC788\uC5B4\uC694'));return;}
   try{const {error}=await window.ffSB.from('group_members').insert({group_id:_curGroup.id,user_id:cloudUser.id});if(error&&error.code!=='23505')throw error;_myGroupIds.add(_curGroup.id);_curGroup.member_count=(_curGroup.member_count||0)+1;haptic&&haptic('success');showToast(_t('Joined the group!','\uADF8\uB8F9\uC5D0 \uCC38\uC5EC\uD588\uC5B4\uC694!'),'success');renderGroupHeader();}catch(e){showToast(_t('Could not join','\uCC38\uC5EC\uD558\uC9C0 \uBABB\uD588\uC5B4\uC694'));}
 }
-async function leaveCurrentGroup(){
+function leaveCurrentGroup(){
+  if(!_curGroup)return;
+  askConfirm({icon:'\uD83D\uDC4B',title:_t('Leave this group?','\uADF8\uB8F9\uC5D0\uC11C \uB098\uAC08\uAE4C\uC694?'),body:_t('You can re-join anytime. Your posts stay in the group feed.','\uC5B8\uC81C\uB4E0 \uB2E4\uC2DC \uCC38\uC5EC\uD560 \uC218 \uC788\uC5B4\uC694. \uC791\uC131\uD55C \uAE00\uC740 \uADF8\uB8F9 \uD53C\uB4DC\uC5D0 \uB0A8\uC544\uC694.'),yes:_t('Leave','\uB098\uAC00\uAE30'),danger:true,onYes:doLeaveGroup});
+}
+async function doLeaveGroup(){
   if(!_curGroup)return;
   try{const {error}=await window.ffSB.from('group_members').delete().eq('group_id',_curGroup.id).eq('user_id',cloudUser.id);if(error)throw error;_myGroupIds.delete(_curGroup.id);_curGroup.member_count=Math.max(0,(_curGroup.member_count||1)-1);showToast(_t('Left the group','\uADF8\uB8F9\uC5D0\uC11C \uB098\uC654\uC5B4\uC694'));renderGroupHeader();}catch(e){showToast(_t('Could not leave','\uB098\uAC00\uC9C0 \uBABB\uD588\uC5B4\uC694'));}
 }
