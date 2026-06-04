@@ -1133,6 +1133,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
     <div class="field-label" data-i18n="ii_place">Place</div>
     <input id="ii-place" class="text-input" maxlength="50" placeholder="the home office" data-i18n-ph="ii_ph_p" oninput="updateIIPreview()"/>
     <div class="menu-item" style="padding:14px 0;"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-bell" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="ii_remind">Remind me at this time</div><div class="menu-item-sub" data-i18n="ii_remind_sub">A daily nudge to start</div></div><button class="toggle on" id="ii-remind-toggle" onclick="this.classList.toggle('on');if(this.classList.contains('on')&&typeof _notifPermission==='function')_notifPermission();"></button></div>
+    <div id="ii-notif-row"><div class="field-label" id="ii-notif-label">Extra reminder time (optional)</div><input id="ii-notif-time" class="text-input" type="time"/><div style="font-size:12px;color:var(--color-text-tertiary);margin-top:5px;" id="ii-notif-hint">If set, you'll be nudged at this time too — so the alert fires at both this time and your intention time.</div></div>
     <button class="btn-main" onclick="saveIntention()" style="margin-top:10px;"><span data-i18n="ii_save">Save intention</span></button>
   </div>
 </div>
@@ -2267,7 +2268,7 @@ function toggleTimer(){if(timerEditing)return;if(running){clearInterval(ticker);
     if(pauseStartedAt&&sessionPauses.length){const dur=Math.round((Date.now()-pauseStartedAt)/1000);sessionPauses[sessionPauses.length-1].durationSec=dur;sessionPauseTotal+=dur;pauseStartedAt=null;}
     startTicking();
   }updateTimerOverlay();}
-function intervalDone(manual){playFocusEndChime();haptic('intervalEnd');sessionIntervals++;const xpGain=40+(sessionIntervals>=5?20:0)+(sessionIntervals>=8?40:0);xpTotal+=xpGain;document.getElementById('h-xp').textContent=xpTotal;spawnXpPop(xpGain);updateLevelUI();showToast(INT_MSGS[sessionIntervals]||'Interval '+sessionIntervals+'!','success');const ni=sessionIntervals+1;if(!nudgeDismissed&&DROP_INTERVALS.includes(ni)){const idx=DROP_INTERVALS.indexOf(ni);document.getElementById('nudge-title').textContent=NUDGES[idx].title;document.getElementById('nudge-msg').textContent=NUDGES[idx].msg;showNudge();}renderDots();updateIntervalBadge();const isGoalMet=!infiniteMode&&sessionIntervals>=intervalGoal;
+function intervalDone(manual){haptic('intervalEnd');sessionIntervals++;const xpGain=40+(sessionIntervals>=5?20:0)+(sessionIntervals>=8?40:0);xpTotal+=xpGain;document.getElementById('h-xp').textContent=xpTotal;spawnXpPop(xpGain);updateLevelUI();showToast(INT_MSGS[sessionIntervals]||'Interval '+sessionIntervals+'!','success');const ni=sessionIntervals+1;if(!nudgeDismissed&&DROP_INTERVALS.includes(ni)){const idx=DROP_INTERVALS.indexOf(ni);document.getElementById('nudge-title').textContent=NUDGES[idx].title;document.getElementById('nudge-msg').textContent=NUDGES[idx].msg;showNudge();}renderDots();updateIntervalBadge();const isGoalMet=!infiniteMode&&sessionIntervals>=intervalGoal;if(!isGoalMet)playFocusEndChime();
   if(twoMinMode&&isGoalMet){clearInterval(ticker);clearTimeout(phaseTimeout);running=false;haptic('success');document.getElementById('timer-overlay').classList.remove('show');showModal('twomin-done-modal');return;}
   if(isGoalMet){launchConfetti();setTimeout(()=>openLevelComplete(),700);return;}isRest=true;totalSecs=restMins*60;remaining=totalSecs;setPhaseUI();document.getElementById('big-timer').textContent=fmt(remaining);if(timerOverlayPinned)updateTimerOverlay();if(autoplay)phaseTimeout=setTimeout(startTicking,800);else{setIcon('play-icon','ti-player-play');if(!manual){startAlarmLoop();var _sb=document.getElementById('stop-alarm-btn');if(_sb)_sb.style.display='inline-flex';}}}
 function restDone(manual){playRestEndChime();haptic('restEnd');isRest=false;totalSecs=focusMins*60;remaining=totalSecs;setPhaseUI();document.getElementById('big-timer').textContent=fmt(remaining);if(timerOverlayPinned)updateTimerOverlay();if(autoplay)phaseTimeout=setTimeout(startTicking,800);else{setIcon('play-icon','ti-player-play');if(!manual){startAlarmLoop();var _sb=document.getElementById('stop-alarm-btn');if(_sb)_sb.style.display='inline-flex';}}}
@@ -2607,7 +2608,7 @@ function wallTileHTML(p){
   }
   /* ── SMALL / MEDIUM: compact tile with overlay ── */
   const first=list[0];
-  const statCover=`<div class="hw-statcover" style="background:linear-gradient(150deg, ${p.catColor} 0%, var(--color-background-secondary) 135%);color:${p.catTextColor};"><i class="ti ${p.catIcon} hw-stat-bg"></i><div class="hw-stat-main"><div class="hw-stat-cat"><i class="ti ${p.catIcon}" style="font-size:15px;"></i> ${escapeHtml(p.catName)}</div><div class="hw-stat-big">${fmtMins(p.focusTotalMin)}</div><div class="hw-stat-sub">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))} · ${dateStr}</div></div></div>`;
+  const statCover=`<div class="hw-statcover" style="background:linear-gradient(150deg, ${p.catColor} 0%, var(--color-background-secondary) 135%);color:${p.catTextColor};"><div class="hw-stat-main"><div class="hw-stat-cat"><i class="ti ${p.catIcon}" style="font-size:15px;"></i> ${escapeHtml(p.catName)}</div><div class="hw-stat-big">${fmtMins(p.focusTotalMin)}</div><div class="hw-stat-sub">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))} · ${dateStr}</div></div></div>`;
   const isStat=!first&&!journal;
   const textCover=(!list.length&&snippet)?`<div class="hw-textcover"><div class="hw-textcover-quote">"</div><div class="hw-textcover-body">${snippet}</div></div>`:`<div class="hw-cover" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon}" style="font-size:30px;"></i></div>`;
   const cover=first?(first.type==='video'?`<video src="${first.url}" muted loop playsinline></video>`:`<img src="${first.url}"/>`):(isStat?statCover:textCover);
@@ -2905,16 +2906,16 @@ function renderBadges(){
 function badgeInfo(id){const b=BADGES.find(x=>x.id===id);if(!b)return;const nm=badgeName(b);if(b.tiered){const v=b.value();const ti=tierIndexOf(b.id);const tiers=b.tiers.map((t,i)=>(i<=ti?'✓ ':'')+tierName(TIER_COLORS[TIER_KEYS[i]].label)+' '+t).join(' · ');showToast(nm+': '+v+' '+(LANG==='ko'?'':b.unit)+' — '+tiers,ti>=0?'success':'');}else{const v=b.value();const got=v>=b.target;showToast(got?'✓ '+nm+(LANG==='ko'?' — 획득!':' — earned!'):nm+' · '+v+'/'+b.target+' — '+badgeDescOf(b),got?'success':'');}}
 /* ── Implementation intentions (Atomic Habits) ── */
 function fmtTime12(t){if(!t)return'';const[h,m]=t.split(':').map(Number);if(isNaN(h))return t;const ap=h<12?'AM':'PM';const h12=h%12||12;return h12+':'+String(m||0).padStart(2,'0')+' '+ap;}
-function openNewIntention(){document.getElementById('ii-behavior').value='';document.getElementById('ii-time').value='07:00';document.getElementById('ii-place').value='';document.getElementById('ii-remind-toggle').classList.add('on');updateIIPreview();go('s-new-intention');}
+function openNewIntention(){document.getElementById('ii-behavior').value='';document.getElementById('ii-time').value='07:00';document.getElementById('ii-place').value='';document.getElementById('ii-remind-toggle').classList.add('on');var _nt=document.getElementById('ii-notif-time');if(_nt)_nt.value='';var _nl=document.getElementById('ii-notif-label');if(_nl)_nl.textContent=(LANG==='ko'?'추가 알림 시간 (선택)':'Extra reminder time (optional)');var _nh=document.getElementById('ii-notif-hint');if(_nh)_nh.textContent=(LANG==='ko'?'설정하면 이 시간과 실행 시간 모두에 알림이 울려요.':"If set, you'll be nudged at this time too — the alert fires at both this time and your intention time.");updateIIPreview();go('s-new-intention');}
 function updateIIPreview(){const b=(document.getElementById('ii-behavior').value||'').trim();const t=document.getElementById('ii-time').value;const p=(document.getElementById('ii-place').value||'').trim();document.getElementById('ii-pv-b').textContent=b||'___';document.getElementById('ii-pv-t').textContent=t?fmtTime12(t):'___';document.getElementById('ii-pv-p').textContent=p||'___';}
-function saveIntention(){const b=(document.getElementById('ii-behavior').value||'').trim();const t=document.getElementById('ii-time').value;const p=(document.getElementById('ii-place').value||'').trim();if(!b){showToast(LANG==='ko'?'무엇을 할지 적어주세요':'Add what you\'ll do');return;}const on=document.getElementById('ii-remind-toggle').classList.contains('on');intentions.push({id:'ii'+Date.now(),behavior:b,time:t,place:p,reminderOn:on});persist&&persist();renderIntentions();if(on&&typeof _notifPermission==='function')_notifPermission();if(typeof scheduleIntentionReminders==='function')scheduleIntentionReminders();goRoot('s-home');showToast(LANG==='ko'?'실행 의도가 저장되었어요':'Intention saved','success');}
+function saveIntention(){const b=(document.getElementById('ii-behavior').value||'').trim();const t=document.getElementById('ii-time').value;const p=(document.getElementById('ii-place').value||'').trim();if(!b){showToast(LANG==='ko'?'무엇을 할지 적어주세요':'Add what you\'ll do');return;}const on=document.getElementById('ii-remind-toggle').classList.contains('on');const nt=(document.getElementById('ii-notif-time')||{}).value||'';intentions.push({id:'ii'+Date.now(),behavior:b,time:t,place:p,reminderOn:on,notifTime:nt});persist&&persist();renderIntentions();if(on&&typeof _notifPermission==='function')_notifPermission();if(typeof scheduleIntentionReminders==='function')scheduleIntentionReminders();goRoot('s-home');showToast(LANG==='ko'?'실행 의도가 저장되었어요':'Intention saved','success');}
 function deleteIntention(id){intentions=intentions.filter(x=>x.id!==id);persist&&persist();renderIntentions();showToast(LANG==='ko'?'삭제되었어요':'Removed');}
 function renderIntentions(){const el=document.getElementById('intentions-section');if(!el)return;
   const header=`<div style="padding:14px 20px 8px;display:flex;align-items:center;justify-content:space-between;"><div class="sec-label" style="margin-bottom:0;" data-i18n="ii_section">My intentions</div><button class="btn-ghost" onclick="openNewIntention()"><i class="ti ti-plus" style="font-size:14px;vertical-align:-2px;"></i> <span data-i18n="ii_new">New</span></button></div>`;
   if(!intentions.length){el.innerHTML=header+`<div style="margin:0 20px 8px;padding:16px;border-radius:14px;background:var(--color-background-secondary);cursor:pointer;" onclick="openNewIntention()"><div style="font-size:14px;line-height:1.6;color:var(--color-text-secondary);"><span data-i18n="ii_empty">Plan exactly when & where you'll focus. </span><span style="color:var(--color-accent);font-weight:600;" data-i18n="ii_empty_cta">I'll do X at TIME in PLACE →</span></div></div>`;iconReplace(el);applyLang&&applyLang();return;}
   const rows=intentions.map(it=>`<div style="margin:0 20px 8px;padding:14px 15px;border-radius:14px;background:var(--color-background-secondary);display:flex;align-items:flex-start;gap:11px;">
     <div style="width:36px;height:36px;border-radius:10px;background:var(--color-accent-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-target" style="color:var(--color-accent);font-size:18px;"></i></div>
-    <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:600;line-height:1.45;">${escapeHtml(it.behavior)}</div><div style="font-size:13px;color:var(--color-text-secondary);margin-top:2px;">${it.time?fmtTime12(it.time):''}${it.place?(it.time?' · ':'')+escapeHtml(it.place):''}${it.reminderOn?' · 🔔':''}</div></div>
+    <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:600;line-height:1.45;">${escapeHtml(it.behavior)}</div><div style="font-size:13px;color:var(--color-text-secondary);margin-top:2px;">${it.time?fmtTime12(it.time):''}${it.place?(it.time?' · ':'')+escapeHtml(it.place):''}${it.reminderOn?(' · 🔔'+(it.notifTime?(' '+fmtTime12(it.notifTime)):'')):''}</div></div>
     <button class="ib" onclick="deleteIntention('${it.id}')" aria-label="Delete" style="padding:4px;color:var(--color-text-tertiary);"><i class="ti ti-x" style="font-size:16px;"></i></button>
   </div>`).join('');
   el.innerHTML=header+rows;iconReplace(el);applyLang&&applyLang();}
@@ -3294,17 +3295,21 @@ function scheduleIntentionReminders(){
     if(window._iiTimers){window._iiTimers.forEach(function(t){clearTimeout(t);});}
     window._iiTimers=[];
     intentions.forEach(function(it){
-      if(!it.reminderOn||!it.time)return;
-      var parts=String(it.time).split(':'); if(parts.length<2)return;
-      var hh=parseInt(parts[0],10), mm=parseInt(parts[1],10); if(isNaN(hh)||isNaN(mm))return;
-      var now=new Date(); var next=new Date(); next.setHours(hh,mm,0,0);
-      if(next.getTime()<=now.getTime()) next.setDate(next.getDate()+1);
-      var delay=next.getTime()-now.getTime();
+      if(!it.reminderOn)return;
+      var times=[]; if(it.time)times.push(it.time); if(it.notifTime&&it.notifTime!==it.time)times.push(it.notifTime);
+      if(!times.length)return;
       var title=_t('Time to focus','\uC9D1\uC911\uD560 \uC2DC\uAC04\uC774\uC5D0\uC694');
       var body=it.behavior+(it.place?(' \u00B7 '+it.place):'');
-      _tryTriggerNotification(title, body, next.getTime(), it.id);
-      var tid=setTimeout(function(){ _fireNotification(title, body); scheduleIntentionReminders(); }, Math.min(delay, 2147483000));
-      window._iiTimers.push(tid);
+      times.forEach(function(tstr,k){
+        var parts=String(tstr).split(':'); if(parts.length<2)return;
+        var hh=parseInt(parts[0],10), mm=parseInt(parts[1],10); if(isNaN(hh)||isNaN(mm))return;
+        var now=new Date(); var next=new Date(); next.setHours(hh,mm,0,0);
+        if(next.getTime()<=now.getTime()) next.setDate(next.getDate()+1);
+        var delay=next.getTime()-now.getTime();
+        _tryTriggerNotification(title, body, next.getTime(), it.id+'-'+k);
+        var tid=setTimeout(function(){ _fireNotification(title, body); scheduleIntentionReminders(); }, Math.min(delay, 2147483000));
+        window._iiTimers.push(tid);
+      });
     });
   }catch(e){}
 }
@@ -3634,7 +3639,7 @@ async function loadGroupBoard(){
     var totals={}; memberIds.forEach(id=>totals[id]=0);
     try{const {data}=await window.ffSB.from('posts').select('author_id,focus_min,kind').in('author_id',memberIds).eq('kind','session').limit(1000);
       (data||[]).forEach(r=>{if(totals[r.author_id]==null)totals[r.author_id]=0;totals[r.author_id]+=(r.focus_min||0);});}catch(e){}
-    try{if(cloudUser&&totals[cloudUser.id]!=null){(posts||[]).forEach(function(lp){if(lp.intervals>0&&!lp.cloudId)totals[cloudUser.id]+=(lp.focusTotalMin||0);});}}catch(e){}
+    try{if(cloudUser&&totals[cloudUser.id]!=null){var _mine=0;(posts||[]).forEach(function(lp){if(lp.intervals>0)_mine+=(lp.focusTotalMin||0);});totals[cloudUser.id]=_mine;}}catch(e){}
     var pm=await _profilesMap(memberIds);
     var ranked=memberIds.map(id=>({id:id,min:totals[id]||0,h:(pm[id]||{}).handle||'user',n:(pm[id]||{}).name||'User'})).sort((a,b)=>b.min-a.min);
     var medal=['\uD83E\uDD47','\uD83E\uDD48','\uD83E\uDD49'];
