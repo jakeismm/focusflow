@@ -120,24 +120,27 @@ body{display:flex;justify-content:center;min-height:100vh;}
 .grp-chip{border:1.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);border-radius:99px;padding:6px 13px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-sans);}
 .grp-chip.sel{border-color:var(--color-accent);background:var(--color-accent-bg);color:var(--color-accent);}
 /* ── Richer no-media session tile (stat card) ── */
-.hw-statcover{width:100%;height:100%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px;overflow:hidden;}
-.hw-stat-main{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;}
-.hw-stat-cat{font-size:17px;font-weight:700;opacity:0.92;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:7px;}
+.hw-statcover{width:100%;height:100%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;padding:13px 12px;overflow:hidden;}
+.hw-stat-mid{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .hw-stat-big{font-size:28px;font-weight:800;letter-spacing:-0.02em;line-height:1;}
-.hw-stat-sub{font-size:12px;font-weight:600;opacity:0.72;margin-top:4px;}
-.home-wall.size-s .hw-stat-cat{font-size:12px;}
+.hw-stat-sub{font-size:12px;font-weight:600;opacity:0.7;margin-top:4px;}
+.hw-stat-cat{font-size:14px;font-weight:700;opacity:0.92;display:flex;align-items:center;justify-content:center;gap:5px;flex-shrink:0;}
+.home-wall.size-s .hw-stat-cat{font-size:11px;}
 .home-wall.size-s .hw-stat-big{font-size:19px;}
 .home-wall.size-s .hw-stat-sub{font-size:10px;}
-.home-wall.size-l .hw-stat-cat{font-size:20px;}
+.home-wall.size-l .hw-stat-cat{font-size:16px;}
 .home-wall.size-l .hw-stat-big{font-size:38px;}
 .hw-statvis{position:absolute;top:8px;right:9px;z-index:2;font-size:12px;opacity:0.55;}
 /* ── Multi-select ── */
-.hw-tile.hw-sel-on,.hw-card.hw-sel-on{outline:3px solid var(--color-accent);outline-offset:-3px;}
-.hw-select{position:absolute;top:7px;left:8px;z-index:3;font-size:22px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.5);line-height:1;}
-.hw-select.on{color:var(--color-accent);}
-.hw-card .hw-select{top:10px;left:11px;}
+.hw-tile.hw-sel-on,.hw-card.hw-sel-on{position:relative;outline:4px solid var(--color-accent);outline-offset:-4px;}
+.hw-tile.hw-sel-on::after,.hw-card.hw-sel-on::after{content:'';position:absolute;inset:0;background:var(--color-accent);opacity:0.22;pointer-events:none;z-index:2;}
+.hw-select{position:absolute;top:8px;left:8px;z-index:4;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);}
+.hw-select.on{background:var(--color-accent);color:#fff;}
+.hw-card .hw-select{top:11px;left:11px;}
 .hwl-text.clamp{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
 .hwl-more{background:none;border:none;color:var(--color-accent);font-weight:600;font-size:13px;cursor:pointer;padding:3px 0 0;font-family:var(--font-sans);}
+body.solo .social-feature{display:none!important;}
+#solo-btn.on{color:var(--color-accent);}
 </style>
 </head>
 <body>
@@ -594,7 +597,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
   <div class="fab-actions" id="fab-actions">
     <button class="fab-action" onclick="fabDo('begin')"><span class="fab-action-label" data-i18n="begin_session">Begin session</span><span class="fab-action-ic" style="background:var(--color-accent);color:#fff;"><i class="ti ti-player-play" style="font-size:20px;"></i></span></button>
     <button class="fab-action" onclick="fabDo('twomin')"><span class="fab-action-label" data-i18n="twomin_btn">Just 2 minutes — start now</span><span class="fab-action-ic" style="background:var(--color-accent-bg);color:var(--color-accent);"><i class="ti ti-bolt" style="font-size:20px;"></i></span></button>
-    <button class="fab-action" onclick="fabDo('post')"><span class="fab-action-label" data-i18n="fab_new_post">New post</span><span class="fab-action-ic" style="background:var(--color-background-tertiary);color:var(--color-text-primary);"><i class="ti ti-pencil" style="font-size:19px;"></i></span></button>
+    <button class="fab-action social-feature" onclick="fabDo('post')"><span class="fab-action-label" data-i18n="fab_new_post">New post</span><span class="fab-action-ic" style="background:var(--color-background-tertiary);color:var(--color-text-primary);"><i class="ti ti-pencil" style="font-size:19px;"></i></span></button>
   </div>
   <button class="fab-post" id="fab-post" onclick="toggleFab()" aria-label="Create"><svg id="fab-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="transition:transform 0.25s;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
 </div>
@@ -615,6 +618,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
 <div class="modal-bg" id="twomin-done-modal"><div class="modal"><div class="modal-icon">⚡</div><div style="font-size:18px;font-weight:800;margin-bottom:6px;" data-i18n="twomin_done_title">Nice — 2 minutes done!</div><div style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:18px;" data-i18n="twomin_done_sub">You showed up. That's the whole win. Want to keep the momentum going?</div><button class="btn-main" onclick="twoMinKeepGoing()" style="margin-bottom:8px;"><span data-i18n="twomin_keep">Keep going</span></button><button class="btn-outline" onclick="twoMinFinish()"><span data-i18n="twomin_finish">Finish & log it</span></button></div></div>
 <div class="modal-bg" id="daystart-modal"><div class="modal" style="text-align:left;"><div style="font-size:18px;font-weight:800;margin-bottom:4px;" data-i18n="set_daystart">Journal day starts at</div><div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:14px;" data-i18n="daystart_help">Pick when your day rolls over. A late-night session before this hour counts toward the previous day.</div><div id="daystart-options" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;"></div><button class="btn-outline" onclick="closeModal('daystart-modal')"><span data-i18n="conflict_keep">Close</span></button></div></div>
 <div class="modal-bg" id="lockdelay-modal"><div class="modal" style="text-align:left;"><div style="font-size:18px;font-weight:800;margin-bottom:4px;" id="lockdelay-modal-title">Auto-lock after</div><div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:14px;" id="lockdelay-modal-sub">How long after you leave the app before it locks.</div><div id="lockdelay-options" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;"></div><button class="btn-outline" onclick="closeModal('lockdelay-modal')" id="lockdelay-close">Close</button></div></div>
+<div class="modal-bg" id="cal-modal" onclick="if(event.target===this)closeModal('cal-modal')"><div class="modal" style="text-align:left;max-width:330px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><button class="ib" onclick="calShiftMonth(-1)" aria-label="Previous month"><i class="ti ti-chevron-left" style="font-size:20px;"></i></button><div id="cal-title" style="font-size:16px;font-weight:800;"></div><button class="ib" onclick="calShiftMonth(1)" aria-label="Next month"><i class="ti ti-chevron-right" style="font-size:20px;"></i></button></div><div id="cal-weekdays" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:5px;"></div><div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div><button class="btn-outline" id="cal-today-btn" style="margin-top:14px;" onclick="calPickToday()">Today</button></div></div>
 <div class="modal-bg" id="gen-confirm-modal"><div class="modal"><div class="modal-icon" id="gconf-icon">⚠️</div><div style="font-size:16px;font-weight:600;margin-bottom:7px;" id="gconf-title"></div><div style="font-size:14px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:18px;" id="gconf-body"></div><button class="btn-main" id="gconf-yes" style="margin-bottom:8px;"></button><button class="btn-outline" id="gconf-no" onclick="closeModal('gen-confirm-modal')"></button></div></div>
 <div class="modal-bg" id="import-modal"><div class="modal"><div class="modal-icon">📥</div><div style="font-size:18px;font-weight:800;margin-bottom:6px;" data-i18n="import_title">Restore from backup?</div><div id="import-sub" style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:18px;"></div><button class="btn-main" onclick="confirmImport()" style="margin-bottom:8px;"><span data-i18n="import_confirm">Restore</span></button><button class="btn-outline" onclick="closeModal('import-modal');_importPending=null;"><span data-i18n="conflict_keep">Cancel</span></button></div></div>
 <div class="modal-bg" id="session-conflict-modal"><div class="modal"><div class="modal-icon">⏱️</div><div style="font-size:16px;font-weight:600;margin-bottom:7px;" id="scm-title" data-i18n="conflict_title">A session is already running</div><div style="font-size:14px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:18px;" id="scm-sub" data-i18n="conflict_sub">You already have a focus session in progress. You can only run one at a time.</div><button class="btn-main" onclick="resolveConflict()" style="margin-bottom:8px;" id="scm-confirm" data-i18n="conflict_stop">Stop it &amp; start the new one</button><button class="btn-outline" onclick="closeModal('session-conflict-modal')" id="scm-keep" data-i18n="conflict_keep">Keep the current one</button></div></div>
@@ -735,6 +739,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
     <div style="font-size:24px;font-weight:800;letter-spacing:-0.03em;">FocusFlow</div>
     <div style="display:flex;gap:7px;align-items:center;">
       <div style="display:flex;align-items:center;gap:3px;background:#FFF3E0;border-radius:99px;padding:5px 11px;font-size:13px;font-weight:700;color:#FF8A00;"><i class="ti ti-flame" style="font-size:14px;"></i><span id="home-streak-val">0</span>d</div>
+      <button class="ib" id="solo-btn" onclick="toggleSoloMode()" aria-label="Solo mode" style="padding:5px;"><i class="ti ti-user-off" style="font-size:21px;"></i></button>
       <button class="ib" onclick="go('s-settings')" aria-label="Settings" style="padding:5px;"><i class="ti ti-settings" style="font-size:23px;"></i></button>
     </div>
   </div>
@@ -776,18 +781,18 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
       <div class="sec-label" style="margin-bottom:0;"><span data-i18n="activity_wall">Activity wall</span></div>
       <div class="wall-size-ctrl">
         <button class="wall-size-btn" id="wsz-s" onclick="setWallSize('s')" aria-label="Small"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="10" y="3" width="5" height="5" rx="1"/><rect x="17" y="3" width="4" height="5" rx="1"/><rect x="3" y="10" width="5" height="5" rx="1"/><rect x="10" y="10" width="5" height="5" rx="1"/><rect x="17" y="10" width="4" height="5" rx="1"/></svg></button>
-        <button class="wall-size-btn active" id="wsz-m" onclick="setWallSize('m')" aria-label="Medium"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></button>
-        <button class="wall-size-btn" id="wsz-l" onclick="setWallSize('l')" aria-label="Large"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></button>
+        <button class="wall-size-btn" id="wsz-m" onclick="setWallSize('m')" aria-label="Medium"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></button>
+        <button class="wall-size-btn active" id="wsz-l" onclick="setWallSize('l')" aria-label="Large"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></button>
         <button class="wall-size-btn" id="wsz-tl" onclick="setWallMode('timeline')" aria-label="Timeline" style="margin-left:3px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="5" cy="6" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="6" x2="20" y2="6"/><circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="12" x2="20" y2="12"/><circle cx="5" cy="18" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="18" x2="20" y2="18"/></svg></button>
         <button class="wall-size-btn" id="wsz-select" onclick="toggleWallSelectMode()" aria-label="Select" style="margin-left:6px;"><i class="ti ti-square-check" style="font-size:15px;"></i></button>
       </div>
     </div>
-    <div class="home-wall size-m" id="wall-grid" style="padding-bottom:18px;"></div>
+    <div class="home-wall size-l" id="wall-grid" style="padding-bottom:18px;"></div>
     <!-- daily timeline view (toggled) -->
     <div id="wall-timeline" style="display:none;padding-bottom:18px;">
       <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 20px 10px;">
         <button class="ib" onclick="timelineDayShift(-1)" aria-label="Previous day" style="padding:6px;"><i class="ti ti-chevron-left" style="font-size:20px;"></i></button>
-        <div style="text-align:center;cursor:pointer;position:relative;" onclick="openTimelineDatePicker()"><div id="tl-day-label" style="font-size:16px;font-weight:700;letter-spacing:-0.01em;display:flex;align-items:center;justify-content:center;gap:5px;">Today</div><div id="tl-day-sub" style="font-size:12px;color:var(--color-text-secondary);margin-top:1px;"></div><input type="date" id="tl-date-input" onchange="timelinePickDate(this.value)" onclick="event.stopPropagation();" style="position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0;"/></div>
+        <div style="text-align:center;cursor:pointer;" onclick="openTimelineDatePicker()"><div id="tl-day-label" style="font-size:16px;font-weight:700;letter-spacing:-0.01em;display:flex;align-items:center;justify-content:center;gap:5px;">Today</div><div id="tl-day-sub" style="font-size:12px;color:var(--color-text-secondary);margin-top:1px;"></div></div>
         <button class="ib" id="tl-next-btn" onclick="timelineDayShift(1)" aria-label="Next day" style="padding:6px;"><i class="ti ti-chevron-right" style="font-size:20px;"></i></button>
       </div>
       <div id="tl-body"></div>
@@ -1182,6 +1187,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
   <div class="topbar"><button class="ib" onclick="go('s-home')"><i class="ti ti-arrow-left"></i></button><span class="tb-title" data-i18n="settings">Settings</span><span></span></div>
   <div class="screen-scroll" style="padding-bottom:20px;">
     <div class="menu-section-label" data-i18n="set_privacy">Privacy</div>
+    <div class="menu-item"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-user-off" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" id="solo-set-title">Solo mode</div><div class="menu-item-sub" id="solo-set-sub">Hide all social features — just the timer</div></div><button class="toggle" id="solo-set-toggle" onclick="toggleSoloMode()"></button></div>
     <div class="menu-item"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-message-2" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="set_allow_msg">Allow messages</div><div class="menu-item-sub" data-i18n="set_allow_msg_sub">Anyone can send you messages</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
     <div class="menu-item"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-eye" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="set_public">Public profile</div><div class="menu-item-sub" data-i18n="set_public_sub">Others can find and follow you</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
     <div class="menu-section-label" data-i18n="set_timer">Timer</div>
@@ -1224,10 +1230,10 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
     <div class="menu-item" onclick="goBadges()"><div class="menu-icon-box" style="background:#FAEEDA;"><i class="ti ti-award" style="color:#BA7517;font-size:16px;"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="m_ach">Achievements</div><div class="menu-item-sub" data-i18n="m_ach_sub">Badges and milestones</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
     <div class="menu-item" onclick="goGoals()"><div class="menu-icon-box" style="background:#E6F1FB;"><i class="ti ti-target" style="color:#0C447C;font-size:16px;"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="m_goals">My Goals</div><div class="menu-item-sub" data-i18n="m_goals_sub">Set goals, earn custom badges</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
     <div class="menu-item" onclick="goRewards()"><div class="menu-icon-box" style="background:#FBEAF0;"><i class="ti ti-gift" style="color:#72243E;font-size:16px;"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="m_rewards">Rewards</div><div class="menu-item-sub" data-i18n="m_rewards_sub">Café &amp; restaurant perks</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
-    <div class="menu-section-label" data-i18n="m_social">Social</div>
-    <div class="menu-item" onclick="go('s-discover')"><div class="menu-icon-box" style="background:#EEEDFE;"><i class="ti ti-compass" style="color:#3C3489;font-size:16px;"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="m_discover">Discover</div><div class="menu-item-sub" data-i18n="m_discover_sub">Find users and tags</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
-    <div class="menu-item" onclick="go('s-buddies')"><div class="menu-icon-box" style="background:#EAF3DE;"><i class="ti ti-users" style="color:#27500A;font-size:16px;"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="m_buddies">Study buddies</div><div class="menu-item-sub" data-i18n="m_buddies_sub">View buddy activity</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
-    <div class="menu-item" onclick="go('s-messages');renderMsgList()"><div class="menu-icon-box" style="background:#FAEEDA;"><i class="ti ti-message-2" style="color:#633806;font-size:16px;"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="m_messages">Messages</div><div class="menu-item-sub" data-i18n="m_messages_sub">Chat with study buddies</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
+    <div class="menu-section-label social-feature" data-i18n="m_social">Social</div>
+    <div class="menu-item social-feature" onclick="go('s-discover')"><div class="menu-icon-box" style="background:#EEEDFE;"><i class="ti ti-compass" style="color:#3C3489;font-size:16px;"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="m_discover">Discover</div><div class="menu-item-sub" data-i18n="m_discover_sub">Find users and tags</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
+    <div class="menu-item social-feature" onclick="go('s-buddies')"><div class="menu-icon-box" style="background:#EAF3DE;"><i class="ti ti-users" style="color:#27500A;font-size:16px;"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="m_buddies">Study buddies</div><div class="menu-item-sub" data-i18n="m_buddies_sub">View buddy activity</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
+    <div class="menu-item social-feature" onclick="go('s-messages');renderMsgList()"><div class="menu-icon-box" style="background:#FAEEDA;"><i class="ti ti-message-2" style="color:#633806;font-size:16px;"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="m_messages">Messages</div><div class="menu-item-sub" data-i18n="m_messages_sub">Chat with study buddies</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
     <div class="menu-section-label" data-i18n="m_account">Account</div>
     <div class="menu-item" onclick="go('s-home')"><div class="menu-icon-box" style="background:#FAEEDA;"><i class="ti ti-user-circle" style="color:#633806;font-size:16px;"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="m_profile">Profile</div><div class="menu-item-sub" data-i18n="m_profile_sub">Sessions, followers, badges</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
     <div class="menu-item" onclick="go('s-settings')"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-settings" style="color:var(--color-text-secondary);font-size:16px;"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="m_settings">Settings</div><div class="menu-item-sub" data-i18n="m_settings_sub">Privacy, notifications, language</div></div><i class="ti ti-chevron-right" style="color:var(--color-text-tertiary);font-size:14px;"></i></div>
@@ -1299,8 +1305,8 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
 <div class="global-nav" id="global-nav" style="display:none;">
   <button class="gnav-btn active" id="gnav-home" onclick="go('s-home')"><div class="gnav-icon"><i class="ti ti-home"></i></div><span data-i18n="nav_home">Home</span></button>
   <button class="gnav-btn" id="gnav-session" onclick="_navSession()"><div class="gnav-icon"><i class="ti ti-player-play"></i></div><span data-i18n="nav_session">Session</span></button>
-  <button class="gnav-btn" id="gnav-discover" onclick="go('s-discover')"><div class="gnav-icon"><i class="ti ti-compass"></i></div><span data-i18n="nav_discover">Discover</span></button>
-  <button class="gnav-btn" id="gnav-buddies" onclick="go('s-buddies')"><div class="gnav-icon"><i class="ti ti-users"></i></div><span data-i18n="nav_buddies">Buddies</span></button>
+  <button class="gnav-btn social-feature" id="gnav-discover" onclick="go('s-discover')"><div class="gnav-icon"><i class="ti ti-compass"></i></div><span data-i18n="nav_discover">Discover</span></button>
+  <button class="gnav-btn social-feature" id="gnav-buddies" onclick="go('s-buddies')"><div class="gnav-icon"><i class="ti ti-users"></i></div><span data-i18n="nav_buddies">Buddies</span></button>
   <button class="gnav-btn" id="gnav-menu" onclick="go('s-menu')"><div class="gnav-icon"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></div></button>
 </div>
 </div>
@@ -1390,6 +1396,7 @@ const ICON_PATHS={
 'square-check':'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 12l2 2l4-4"/>',
 'checkbox':'<rect x="4" y="4" width="16" height="16" rx="2"/>',
 'circle-check':'<circle cx="12" cy="12" r="9"/><path d="M9 12l2 2l4-4"/>',
+'chevron-left':'<path d="M15 6l-6 6 6 6"/>',
  'arrow-left':'<path d="M5 12h14M5 12l6 6M5 12l6-6"/>',
  'device-vibrate':'<path d="M9 4h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM4 9v6M20 9v6"/>',
  'calendar-event':'<rect x="4" y="5" width="16" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="4" y1="11" x2="20" y2="11"/><rect x="8" y="15" width="2" height="2"/>',
@@ -2551,7 +2558,7 @@ function openLevelComplete(){
   if(leveledUp)setTimeout(launchConfetti,400);
 }
 
-let homeWallSize='m';
+let homeWallSize='l';
 let homeWallMode='grid';/* 'grid' | 'timeline' */
 let timelineDate=new Date();/* the day currently shown in timeline view */
 let dayStartHour=0;/* 0–23: hour the "day" begins (e.g., 4 = a 4AM→4AM journaling day) */
@@ -2627,7 +2634,7 @@ function wallTileHTML(p){
   }
   /* ── SMALL / MEDIUM: compact tile with overlay ── */
   const first=list[0];
-  const statCover=`<div class="hw-statcover" style="background:linear-gradient(150deg, ${p.catColor} 0%, var(--color-background-secondary) 135%);color:${p.catTextColor};"><div class="hw-stat-main"><div class="hw-stat-cat"><i class="ti ${p.catIcon}" style="font-size:18px;"></i> ${escapeHtml(p.catName)}</div><div class="hw-stat-big">${fmtMins(p.focusTotalMin)}</div><div class="hw-stat-sub">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))} · ${dateStr}</div></div></div>`;
+  const statCover=`<div class="hw-statcover" style="background:linear-gradient(150deg, ${p.catColor} 0%, var(--color-background-secondary) 135%);color:${p.catTextColor};"><div class="hw-stat-mid"><div class="hw-stat-big">${fmtMins(p.focusTotalMin)}</div><div class="hw-stat-sub">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))}</div></div><div class="hw-stat-cat"><i class="ti ${p.catIcon}" style="font-size:15px;"></i> ${escapeHtml(p.catName)} · ${dateStr}</div></div>`;
   const isStat=!first&&!journal;
   const textCover=(!list.length&&snippet)?`<div class="hw-textcover"><div class="hw-textcover-quote">"</div><div class="hw-textcover-body">${snippet}</div></div>`:`<div class="hw-cover" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon}" style="font-size:30px;"></i></div>`;
   const cover=first?(first.type==='video'?`<video src="${first.url}" muted loop playsinline></video>`:`<img src="${first.url}"/>`):(isStat?statCover:textCover);
@@ -2695,7 +2702,7 @@ function openNewPost(){window._pendingGroupPost=null;window.postMediaSplit=false
   const hero=document.querySelector('#s-post .dash-hero');if(hero)hero.style.display='none';
   const dm=document.getElementById('dash-media');if(dm){dm.style.display='none';dm.innerHTML='';}
   document.getElementById('dash-stats-grid').style.display='none';document.getElementById('dash-timeline-section').style.display='none';document.getElementById('dash-tags-section').style.display='none';
-  const js=document.querySelector('#dash-journal').closest('.dash-section');if(js)js.style.display='none';const bsec=document.getElementById('dash-book-section');if(bsec)bsec.style.display='none';
+  const js=document.querySelector('#dash-journal').closest('.dash-section');if(js)js.style.display='none';const bsec=document.getElementById('dash-book-section');if(bsec)bsec.style.display='none';var _tds2=document.getElementById('dash-todos-section');if(_tds2)_tds2.style.display='none';
   document.getElementById('post-delete-btn').style.display='none';
   document.getElementById('post-edit-mode').style.display='flex';document.getElementById('post-edit-btn').style.display='none';document.getElementById('post-back').onclick=()=>go('s-home');
   const sc=document.querySelector('#s-post .screen-scroll');if(sc){sc.style.display='flex';sc.style.flexDirection='column';sc.style.overflow='hidden';}
@@ -3380,22 +3387,58 @@ function toggleDetailTodo(id,i){
   if(typeof renderWall==='function')renderWall();
 }
 
-/* ── Timeline: tap the date to pick any day (#2) ── */
-function _fmtDateInput(d){d=d||new Date();var y=d.getFullYear();var m=String(d.getMonth()+1).padStart(2,'0');var dd=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+dd;}
+/* ── Timeline: tap the date to pick any day via a custom calendar (#2/#3) ── */
 function openTimelineDatePicker(){
-  var inp=document.getElementById('tl-date-input'); if(!inp)return;
-  try{inp.value=_fmtDateInput(typeof timelineDate!=='undefined'?timelineDate:new Date());}catch(e){}
-  if(inp.showPicker){try{inp.showPicker();return;}catch(e){}}
-  inp.click();
+  var d=(typeof timelineDate!=='undefined'&&timelineDate)?timelineDate:new Date();
+  window._calY=d.getFullYear(); window._calM=d.getMonth();
+  var tb=document.getElementById('cal-today-btn'); if(tb)tb.textContent=_t('Today','\uC624\uB298');
+  renderCal(); showModal('cal-modal');
 }
-function timelinePickDate(v){
-  if(!v)return; var parts=v.split('-'); if(parts.length<3)return;
-  timelineDate=new Date(parseInt(parts[0],10),parseInt(parts[1],10)-1,parseInt(parts[2],10));
-  if(typeof renderTimeline==='function')renderTimeline();
+function calShiftMonth(n){window._calM+=n;if(window._calM<0){window._calM=11;window._calY--;}else if(window._calM>11){window._calM=0;window._calY++;}renderCal();}
+function calPickToday(){var t=new Date();timelineDate=new Date(t.getFullYear(),t.getMonth(),t.getDate());closeModal('cal-modal');if(typeof renderTimeline==='function')renderTimeline();}
+function calPick(y,m,d){timelineDate=new Date(y,m,d);closeModal('cal-modal');if(typeof renderTimeline==='function')renderTimeline();}
+function renderCal(){
+  var y=window._calY, m=window._calM;
+  var monthsEn=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var t=document.getElementById('cal-title'); if(t)t.textContent=(LANG==='ko'?(y+'\uB144 '+(m+1)+'\uC6D4'):(monthsEn[m]+' '+y));
+  var wd=document.getElementById('cal-weekdays');
+  var wdl=LANG==='ko'?['\uC77C','\uC6D4','\uD654','\uC218','\uBAA9','\uAE08','\uD1A0']:['S','M','T','W','T','F','S'];
+  if(wd)wd.innerHTML=wdl.map(function(w){return '<div style="text-align:center;font-size:11px;font-weight:700;color:var(--color-text-tertiary);padding:3px 0;">'+w+'</div>';}).join('');
+  var grid=document.getElementById('cal-grid'); if(!grid)return;
+  var first=new Date(y,m,1).getDay(); var days=new Date(y,m+1,0).getDate();
+  var now=new Date(); var todayKey=now.getFullYear()+'-'+now.getMonth()+'-'+now.getDate();
+  var selKey=(typeof timelineDate!=='undefined'&&timelineDate)?(timelineDate.getFullYear()+'-'+timelineDate.getMonth()+'-'+timelineDate.getDate()):'';
+  var html=''; for(var i=0;i<first;i++)html+='<div></div>';
+  for(var d=1;d<=days;d++){
+    var key=y+'-'+m+'-'+d, isToday=key===todayKey, isSel=key===selKey;
+    var bg=isSel?'var(--color-accent)':(isToday?'var(--color-accent-bg)':'transparent');
+    var col=isSel?'#fff':(isToday?'var(--color-accent)':'var(--color-text-primary)');
+    html+='<button onclick="calPick('+y+','+m+','+d+')" style="aspect-ratio:1;border:none;border-radius:10px;background:'+bg+';color:'+col+';font-size:14px;font-weight:'+(isSel||isToday?'700':'500')+';cursor:pointer;font-family:var(--font-sans);display:flex;align-items:center;justify-content:center;">'+d+'</button>';
+  }
+  grid.innerHTML=html;
 }
 
 /* ── "more" toggle for long post text on the wall (#5) ── */
 function toggleHwlMore(id,btn){var el=document.getElementById('hwl-text-'+id);if(!el)return;var clamped=el.classList.toggle('clamp');btn.textContent=clamped?(LANG==='ko'?'더보기':'more'):(LANG==='ko'?'접기':'less');}
+
+/* ── Anti-social / Solo mode (#4) ── */
+window.soloMode = window.soloMode || false;
+function applySoloMode(){
+  document.body.classList.toggle('solo', !!window.soloMode);
+  var b=document.getElementById('solo-btn'); if(b)b.classList.toggle('on', !!window.soloMode);
+  var t=document.getElementById('solo-set-toggle'); if(t)t.classList.toggle('on', !!window.soloMode);
+  var st=document.getElementById('solo-set-title'); if(st)st.textContent=_t('Solo mode','\uC194\uB85C \uBAA8\uB4DC');
+  var ss=document.getElementById('solo-set-sub'); if(ss)ss.textContent=_t('Hide all social features — just the timer','\uBAA8\uB4E0 \uC18C\uC15C \uAE30\uB2A5\uC744 \uC228\uAE30\uACE0 \uD0C0\uC774\uBA38\uB9CC');
+  if(window.soloMode){var act=document.querySelector('.screen.active');if(act&&['s-discover','s-buddies','s-group','s-group-create','s-messages','s-msg-thread','s-buddy-feed','s-tag-feed','s-user-profile'].indexOf(act.id)>=0&&typeof goRoot==='function')goRoot('s-home');}
+}
+function toggleSoloMode(){
+  window.soloMode=!window.soloMode;
+  try{localStorage.setItem('focusflow_solo',window.soloMode?'1':'0');}catch(e){}
+  applySoloMode();
+  showToast(window.soloMode?_t('Solo mode on · social features hidden','\uC194\uB85C \uBAA8\uB4DC \uCF1C\uC9D0'):_t('Solo mode off','\uC194\uB85C \uBAA8\uB4DC \uAEBC\uC9D0'),'success');
+}
+try{window.soloMode=localStorage.getItem('focusflow_solo')==='1';}catch(e){}
+setTimeout(function(){ try{ applySoloMode(); }catch(e){} }, 400);
 
 /* ── Generic confirm dialog ── */
 function askConfirm(o){
@@ -3799,6 +3842,7 @@ async function submitCreateGroup(){
 async function renderEndGroupPicker(){
   var row=document.getElementById('end-group-row'), pick=document.getElementById('end-group-pick');
   if(!row||!pick)return;
+  if(window.soloMode){row.style.display='none';return;}
   if(!_cloudOn()){row.style.display='none';return;}
   document.getElementById('end-group-label').textContent=_t('Share to a group (optional)','\uADF8\uB8F9\uC5D0 \uACF5\uC720 (\uC120\uD0DD)');
   await loadMyGroupIds();
