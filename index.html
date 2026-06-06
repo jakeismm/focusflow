@@ -339,6 +339,12 @@ button i.ti,.btn-sm i.ti{color:inherit;}
 .home-wall.size-s{grid-template-columns:repeat(3,minmax(0,1fr));}
 .home-wall.size-m{grid-template-columns:repeat(2,minmax(0,1fr));}
 .home-wall.size-l{grid-template-columns:repeat(1,minmax(0,1fr));gap:16px;padding:0;}
+.home-wall.size-xl{grid-template-columns:repeat(1,minmax(0,1fr));gap:16px;padding:0;}
+.hwl-1{aspect-ratio:1/1;}
+.hw-cover.hw-cv{aspect-ratio:16/10;height:auto;}
+.home-wall.size-xl .hwl-1{aspect-ratio:4/5;}
+.home-wall.size-xl .wc-slide{aspect-ratio:4/5;}
+.home-wall.size-xl .hw-cover.hw-cv{aspect-ratio:4/5;}
 /* large = Instagram feed card: media on top, text/date below */
 .hw-card{background:var(--color-background-primary);border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid var(--color-border-secondary);}
 .hwl-media{position:relative;background:var(--color-background-secondary);min-height:80px;}
@@ -819,6 +825,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
         <button class="wall-size-btn" id="wsz-s" onclick="setWallSize('s')" aria-label="Small"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="10" y="3" width="5" height="5" rx="1"/><rect x="17" y="3" width="4" height="5" rx="1"/><rect x="3" y="10" width="5" height="5" rx="1"/><rect x="10" y="10" width="5" height="5" rx="1"/><rect x="17" y="10" width="4" height="5" rx="1"/></svg></button>
         <button class="wall-size-btn" id="wsz-m" onclick="setWallSize('m')" aria-label="Medium"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></button>
         <button class="wall-size-btn active" id="wsz-l" onclick="setWallSize('l')" aria-label="Large"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></button>
+        <button class="wall-size-btn" id="wsz-xl" onclick="setWallSize('xl')" aria-label="Full height"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="2" width="12" height="20" rx="2"/></svg></button>
         <button class="wall-size-btn" id="wsz-tl" onclick="setWallMode('timeline')" aria-label="Timeline" style="margin-left:3px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="5" cy="6" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="6" x2="20" y2="6"/><circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="12" x2="20" y2="12"/><circle cx="5" cy="18" r="1.6" fill="currentColor" stroke="none"/><line x1="9" y1="18" x2="20" y2="18"/></svg></button>
         <button class="wall-size-btn" id="wsz-select" onclick="toggleWallSelectMode()" aria-label="Select" style="margin-left:6px;"><i class="ti ti-square-check" style="font-size:15px;"></i></button>
       </div>
@@ -1309,7 +1316,10 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
     <div class="dash-section" id="dash-todos-section" style="display:none;"><div class="dash-section-title" id="dash-todos-title">To-do</div><div id="dash-todos"></div></div>
     <div id="post-edit-mode" style="display:none;flex-direction:column;flex:1;min-height:0;">
       <div style="flex:1;overflow-y:auto;padding:14px 20px;display:flex;flex-direction:column;">
-        <textarea class="ta" id="post-edit-ta" placeholder="What's on your mind?" style="flex:1;min-height:30vh;margin-bottom:12px;"></textarea>
+        <textarea class="ta" id="post-edit-ta" placeholder="What's on your mind?" style="min-height:120px;margin-bottom:12px;"></textarea>
+        <div class="field-label">Tags <span style="font-size:11px;color:var(--color-text-tertiary);">(optional)</span></div>
+        <div style="display:flex;gap:7px;margin-bottom:7px;"><input id="post-tag-input" class="text-input" placeholder="Add a tag" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();addPostTag();}"/><button class="btn-sm" onclick="addPostTag()">Add</button></div>
+        <div id="post-tag-chips" class="tag-wrap" style="margin-bottom:10px;"></div>
         <div class="field-label">Photo / video <span style="font-size:11px;color:var(--color-text-tertiary);">(optional)</span></div>
         <div class="end-media-row" id="post-media-row"><button class="media-btn" onclick="pickMedia('photo','post')"><i class="ti ti-camera"></i>Photo</button><button class="media-btn" onclick="pickMedia('video','post')"><i class="ti ti-video"></i>Video</button><button class="media-btn selected" onclick="clearMedia('post')"><i class="ti ti-x"></i>None</button></div>
         <div id="post-media-preview" style="display:none;margin-bottom:12px;position:relative;"></div>
@@ -1320,9 +1330,6 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
         </div>
         <div class="field-label" style="margin-top:9px;">Category <span style="font-size:11px;color:var(--color-text-tertiary);">(optional)</span></div>
         <div id="post-cat-chips" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;"></div>
-        <div class="field-label">Tags <span style="font-size:11px;color:var(--color-text-tertiary);">(optional)</span></div>
-        <div style="display:flex;gap:7px;margin-bottom:7px;"><input id="post-tag-input" class="text-input" placeholder="Add a tag" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();addPostTag();}"/><button class="btn-sm" onclick="addPostTag()">Add</button></div>
-        <div id="post-tag-chips" class="tag-wrap" style="margin-bottom:10px;"></div>
         <div class="field-label">To-do list <span style="font-size:11px;color:var(--color-text-tertiary);">(optional)</span></div>
         <div style="display:flex;gap:7px;margin-bottom:7px;"><input id="post-todo-input" class="text-input" placeholder="Add a to-do item" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();addPostTodo();}"/><button class="btn-sm" onclick="addPostTodo()">Add</button></div>
         <div id="post-todo-list" style="margin-bottom:10px;"></div>
@@ -2052,6 +2059,29 @@ async function loadCloudPosts(){
     return true;
   }catch(e){return false;}
 }
+async function restoreCloudSession(){
+  if(!window.ffSB)return false;
+  try{
+    const {data}=await window.ffSB.auth.getSession();
+    const session=data&&data.session;
+    if(!session||!session.user)return false;
+    if(cloudUser&&cloudUser.id===session.user.id)return true; /* already restored */
+    const u=session.user;
+    let handle=(u.email||'user').split('@')[0];
+    try{const {data:prof}=await window.ffSB.from('profiles').select('handle').eq('id',u.id).maybeSingle();if(prof&&prof.handle)handle=prof.handle;}catch(e){}
+    cloudUser={id:u.id,email:u.email,handle:handle};
+    const ok=await loadCloudPosts();   /* merges cloud + local, never wipes */
+    if(typeof loadCloudHomeStats==='function')loadCloudHomeStats();
+    if(ok&&document.getElementById('s-home')&&document.getElementById('s-home').classList.contains('active')){
+      if(typeof renderWall==='function')renderWall();
+      if(typeof updateProfileBadges==='function')updateProfileBadges();
+      if(typeof renderIdentity==='function')renderIdentity();
+      if(homeWallMode==='timeline'&&typeof renderTimeline==='function')renderTimeline();
+    }
+    if(ok&&typeof persist==='function')persist();   /* re-back-up recovered posts locally */
+    return true;
+  }catch(e){return false;}
+}
 async function loadCloudHomeStats(){
   if(!cloudSession())return;
   try{
@@ -2438,7 +2468,7 @@ function renderMediaPreview(where){
   /* horizontal thumbnail strip — compact, doesn't dominate the editor */
   const thumbs=list.map((m,i)=>{const media=m.type==='video'?`<video src="${m.url}" muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`:`<img src="${m.url}" style="width:100%;height:100%;object-fit:cover;"/>`;const vbadge=m.type==='video'?`<div style="position:absolute;bottom:3px;left:4px;color:#fff;font-size:11px;text-shadow:0 1px 2px rgba(0,0,0,0.6);"><i class="ti ti-video" style="font-size:12px;"></i></div>`:'';const moveRow=list.length>1?`<div style="position:absolute;bottom:2px;left:0;right:0;display:flex;justify-content:center;gap:14px;">${i>0?`<button onclick="moveMediaItem('${where}',${i},-1)" aria-label="Move left" style="width:22px;height:22px;border-radius:50%;border:none;background:rgba(0,0,0,0.62);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;"><i class="ti ti-chevron-left" style="font-size:13px;"></i></button>`:'<span style="width:22px;"></span>'}${i<list.length-1?`<button onclick="moveMediaItem('${where}',${i},1)" aria-label="Move right" style="width:22px;height:22px;border-radius:50%;border:none;background:rgba(0,0,0,0.62);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;"><i class="ti ti-chevron-right" style="font-size:13px;"></i></button>`:'<span style="width:22px;"></span>'}</div>`:'';return `<div style="position:relative;width:74px;height:74px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--color-background-tertiary);">${media}${vbadge}${i===0?`<div style="position:absolute;top:0;left:0;background:var(--color-accent);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-bottom-right-radius:6px;">1st</div>`:''}<button onclick="removeMediaItem('${where}',${i})" style="position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;border:none;background:rgba(0,0,0,0.6);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;"><i class="ti ti-x" style="font-size:12px;"></i></button>${moveRow}</div>`;}).join('');
   const addTile=`<button onclick="pickMedia('photo','${where}')" aria-label="Add more" style="width:74px;height:74px;border-radius:10px;border:1.5px dashed var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-tertiary);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><i class="ti ti-plus" style="font-size:22px;"></i></button>`;
-  let html=`<div style="display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;-webkit-overflow-scrolling:touch;">${thumbs}${addTile}</div>`;
+  let html=`<div style="display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;-webkit-overflow-scrolling:touch;touch-action:pan-x;">${thumbs}${addTile}</div>`;
   /* EXIF timestamp toggle — only when the first item carries a capture time */
   const first=list[0];
   if(first&&first.captureTime){const d=new Date(first.captureTime);const stamp=d.toLocaleDateString(LANG==='ko'?'ko-KR':'en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(LANG==='ko'?'ko-KR':'en-US',{hour:'numeric',minute:'2-digit'});
@@ -2601,8 +2631,8 @@ let timelineDate=new Date();/* the day currently shown in timeline view */
 let dayStartHour=0;/* 0–23: hour the "day" begins (e.g., 4 = a 4AM→4AM journaling day) */
 /* the journaling-day a timestamp belongs to, accounting for dayStartHour */
 function journalDayKey(d){d=(d instanceof Date)?d:new Date(d);const shifted=new Date(d.getTime()-dayStartHour*3600000);return shifted.getFullYear()+'-'+String(shifted.getMonth()+1).padStart(2,'0')+'-'+String(shifted.getDate()).padStart(2,'0');}
-function setWallMode(m){homeWallMode=m;const grid=document.getElementById('wall-grid');const tl=document.getElementById('wall-timeline');const sizeBtns=['s','m','l'];if(m==='timeline'){if(grid)grid.style.display='none';if(tl)tl.style.display='block';sizeBtns.forEach(x=>{const b=document.getElementById('wsz-'+x);if(b)b.className='wall-size-btn';});const tb=document.getElementById('wsz-tl');if(tb)tb.className='wall-size-btn active';timelineDate=new Date();renderTimeline();}else{if(grid)grid.style.display='';if(tl)tl.style.display='none';const tb=document.getElementById('wsz-tl');if(tb)tb.className='wall-size-btn';setWallSize(homeWallSize);}persist&&persist();}
-function setWallSize(s){homeWallSize=s;homeWallMode='grid';const tl=document.getElementById('wall-timeline');if(tl)tl.style.display='none';const tb=document.getElementById('wsz-tl');if(tb)tb.className='wall-size-btn';['s','m','l'].forEach(x=>{const btn=document.getElementById('wsz-'+x);if(btn)btn.className='wall-size-btn'+(x===s?' active':'');});const hg=document.getElementById('wall-grid');if(hg){hg.style.display='';hg.className='home-wall size-'+s;}persist&&persist();}
+function setWallMode(m){homeWallMode=m;const grid=document.getElementById('wall-grid');const tl=document.getElementById('wall-timeline');const sizeBtns=['s','m','l','xl'];if(m==='timeline'){if(grid)grid.style.display='none';if(tl)tl.style.display='block';sizeBtns.forEach(x=>{const b=document.getElementById('wsz-'+x);if(b)b.className='wall-size-btn';});const tb=document.getElementById('wsz-tl');if(tb)tb.className='wall-size-btn active';timelineDate=new Date();renderTimeline();}else{if(grid)grid.style.display='';if(tl)tl.style.display='none';const tb=document.getElementById('wsz-tl');if(tb)tb.className='wall-size-btn';setWallSize(homeWallSize);}persist&&persist();}
+function setWallSize(s){homeWallSize=s;homeWallMode='grid';const tl=document.getElementById('wall-timeline');if(tl)tl.style.display='none';const tb=document.getElementById('wsz-tl');if(tb)tb.className='wall-size-btn';['s','m','l','xl'].forEach(x=>{const btn=document.getElementById('wsz-'+x);if(btn)btn.className='wall-size-btn'+(x===s?' active':'');});const hg=document.getElementById('wall-grid');if(hg){hg.style.display='';hg.className='home-wall size-'+s;}persist&&persist();}
 function timelineDayShift(n){timelineDate=new Date(timelineDate.getTime()+n*86400000);renderTimeline();}
 function timelineGoToday(){timelineDate=new Date();renderTimeline();}
 function fmtHour(h){const ap=h<12?'AM':'PM';const h12=h%12||12;return h12+' '+ap;}
@@ -2642,7 +2672,7 @@ function renderTimeline(){
   }).join('');
   body.innerHTML=html;iconReplace(body);
 }
-function wallMediaList(p){return (p.mediaList&&p.mediaList.length)?p.mediaList:(p.mediaUrl?[{type:p.media,url:p.mediaUrl}]:[]);}
+function wallMediaList(p){var l=(p.mediaList&&p.mediaList.length)?p.mediaList:(p.mediaUrl?[{type:p.media,url:p.mediaUrl}]:[]);return l.filter(function(m){return m&&m.url;});}
 function wallTileHTML(p){
   const journal=!p.intervals||p.intervals===0;
   const snippet=p.journal?escapeHtml(p.journal):'';
@@ -2658,9 +2688,9 @@ function wallTileHTML(p){
   /* ── Instagram feed card (all sizes): visual on top, category + stats + tags below ── */
   let media;
   if(list.length){media=`<div class="hwl-media">${wallCarouselHTML(list,p.id)}${p.loc?`<div class="hwl-loc"><i class="ti ti-map-pin" style="font-size:11px;"></i> ${escapeHtml(p.loc)}</div>`:''}</div>`;}
-  else if(!journal){media=`<div class="hwl-media"><div class="hw-cover hw-cv" style="background:${p.catColor};color:${p.catTextColor};aspect-ratio:16/10;"><i class="ti ${p.catIcon} hw-cv-ico"></i><div class="hw-cv-big">${fmtMins(p.focusTotalMin)}</div><div class="hw-cv-sub">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))}${p.pauseCount?' · '+p.pauseCount+(LANG==='ko'?' 정지':' pause'+(p.pauseCount!==1?'s':'')):''}</div></div></div>`;}
+  else if(!journal){media=`<div class="hwl-media"><div class="hw-cover hw-cv" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon} hw-cv-ico"></i><div class="hw-cv-big">${fmtMins(p.focusTotalMin)}</div><div class="hw-cv-sub">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))}${p.pauseCount?' · '+p.pauseCount+(LANG==='ko'?' 정지':' pause'+(p.pauseCount!==1?'s':'')):''}</div></div></div>`;}
   else if(snippet){media='';}
-  else{media=`<div class="hwl-media"><div class="hw-cover hw-cv" style="background:${p.catColor};color:${p.catTextColor};aspect-ratio:16/10;"><i class="ti ${p.catIcon} hw-cv-ico" style="opacity:0.9;"></i></div></div>`;}
+  else{media=`<div class="hwl-media"><div class="hw-cover hw-cv" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon} hw-cv-ico" style="opacity:0.9;"></i></div></div>`;}
   const titleLine=(journal&&!p.catChosen)?'':`<div class="hwl-title"><span class="hwl-cat" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon}" style="font-size:14px;"></i> ${escapeHtml(p.catName)}</span>${p.intervals>0?` <span class="hwl-stat">${fmtMins(p.focusTotalMin)} · ${p.intervals}${LANG==='ko'?' 인터벌':' int'}</span>`:''}</div>`;
   const tagsLine=(p.tags&&p.tags.length)?`<div class="hwl-tags">${p.tags.slice(0,4).map(t=>'#'+escapeHtml(t)).join(' ')}</div>`:'';
   const _long=snippet&&snippet.length>140;
@@ -2670,7 +2700,7 @@ function wallTileHTML(p){
 }
 /* lightweight carousel for wall cards (separate id-space from the detail carousel) */
 function wallCarouselHTML(list,pid){
-  if(list.length===1){const m=list[0];return m.type==='video'?`<video src="${m.url}" muted loop playsinline style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;"></video>`:`<img src="${m.url}" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;"/>`;}
+  if(list.length===1){const m=list[0];return m.type==='video'?`<video src="${m.url}" muted loop playsinline class="hwl-1" style="width:100%;object-fit:cover;display:block;"></video>`:`<img src="${m.url}" class="hwl-1" style="width:100%;object-fit:cover;display:block;"/>`;}
   const slides=list.map(m=>`<div class="wc-slide">${m.type==='video'?`<video src="${m.url}" muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`:`<img src="${m.url}" style="width:100%;height:100%;object-fit:cover;"/>`}</div>`).join('');
   const dots=list.map((m,i)=>`<span class="wc-dot${i===0?' active':''}" onclick="event.stopPropagation();wcDot(this,${i})"></span>`).join('');
   return `<div class="wc" data-i="0" data-n="${list.length}" onclick="event.stopPropagation()" ontouchstart="wcTouchStart(event,this)" ontouchmove="wcTouchMove(event,this)" ontouchend="wcTouchEnd(event,this)"><div class="wc-track">${slides}</div><div class="wc-count">1/${list.length}</div><div class="wc-dots">${dots}</div></div>`;
@@ -3231,10 +3261,18 @@ function saveState(){try{const s={posts,xpTotal,totalSessions,personalBest,strea
   /* SAFETY GUARD: never let an empty in-memory state overwrite a non-empty saved one.
      Protects against a bug or half-initialized state silently wiping real posts. */
   if(posts.length===0&&_loadedOnce){try{const prev=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(prev&&Array.isArray(prev.posts)&&prev.posts.length>0){return;}}catch(e){}}
-  const json=JSON.stringify(s);
   /* rolling backup: keep the PREVIOUS good save under a .bak key before overwriting */
   try{const cur=localStorage.getItem(SAVE_KEY);if(cur&&cur.length>2)localStorage.setItem(SAVE_KEY+'.bak',cur);}catch(e){}
-  localStorage.setItem(SAVE_KEY,json);
+  try{ localStorage.setItem(SAVE_KEY,JSON.stringify(s)); }
+  catch(err){
+    /* Storage full (almost always base64 photos). Re-save WITHOUT inline media so posts never silently vanish.
+       Cloud-backed posts reload their photos from the cloud next time; this keeps every post's text/metadata. */
+    try{
+      var _lean=function(stripAll){var c={};for(var k in s)c[k]=s[k];c.posts=posts.map(function(p){var q={};for(var k2 in p)q[k2]=p[k2];if(stripAll||p.cloudId){if(Array.isArray(q.mediaList))q.mediaList=q.mediaList.map(function(m){return (m&&typeof m.url==='string'&&m.url.indexOf('data:')===0)?{type:m.type,url:''}:m;});if(typeof q.mediaUrl==='string'&&q.mediaUrl.indexOf('data:')===0)q.mediaUrl='';}return q;});return JSON.stringify(c);};
+      try{localStorage.setItem(SAVE_KEY,_lean(false));}
+      catch(e2){try{localStorage.setItem(SAVE_KEY,_lean(true));}catch(e3){}}
+    }catch(e9){}
+  }
 }catch(e){}}
 function loadState(){try{let raw=localStorage.getItem(SAVE_KEY);
   let parsed=null;if(raw){try{parsed=JSON.parse(raw);}catch(e){parsed=null;}}
@@ -3264,6 +3302,7 @@ updateTotalTime();renderStep1();renderStep2();renderManage();renderDots();render
 iconReplace(document);
 applyLang();updateLangToggleUI();
 if(homeWallMode==='timeline')setWallMode('timeline');else setWallSize(homeWallSize);
+setTimeout(function(){try{restoreCloudSession();}catch(e){}},250);
 const _ht=document.getElementById('haptics-toggle');if(_ht)_ht.classList.toggle('on',hapticsEnabled);
 lockCfg=loadLockCfg();
 if(lockIsEnabled()){_locked=true;showLock('verify');}
