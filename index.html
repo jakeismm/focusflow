@@ -1034,7 +1034,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
     <div style="text-align:center;margin-bottom:13px;"><i class="ti ti-circle-check" style="font-size:42px;color:#1D9E75;display:block;margin-bottom:7px;"></i><div style="font-size:17px;font-weight:500;margin-bottom:3px;" id="end-title">Great session!</div><div style="font-size:13px;color:var(--color-text-secondary);" id="end-stats"></div></div>
     <div style="background:var(--color-background-secondary);border-radius:10px;padding:11px;margin-bottom:13px;text-align:center;"><div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:2px;">XP earned</div><div style="font-size:24px;font-weight:500;color:#1D9E75;" id="end-xp">+0 XP</div></div>
     <div class="field-label"><span data-i18n="photo_video">Photo / video</span></div>
-    <div class="end-media-row" id="end-media-row"><button class="media-btn" onclick="pickMedia('photo','end')"><i class="ti ti-camera"></i>Photo</button><button class="media-btn" onclick="pickMedia('video','end')"><i class="ti ti-video"></i>Video</button><button class="media-btn selected" onclick="clearMedia('end')"><i class="ti ti-x"></i>Skip</button></div>
+    <div class="end-media-row" id="end-media-row"><button class="media-btn" onclick="pickMedia('photo','end',true)"><i class="ti ti-camera"></i>Camera</button><button class="media-btn" onclick="pickMedia('photo','end')"><i class="ti ti-photo"></i>Photo</button><button class="media-btn" onclick="pickMedia('video','end')"><i class="ti ti-video"></i>Video</button><button class="media-btn selected" onclick="clearMedia('end')"><i class="ti ti-x"></i>Skip</button></div>
     <div id="end-media-preview" style="display:none;margin-bottom:13px;position:relative;"></div>
     <div id="book-analyze-row" style="display:none;margin-bottom:13px;"><button class="btn-outline" onclick="analyzeBookCover('end')" style="display:flex;align-items:center;justify-content:center;gap:7px;"><i class="ti ti-book-2" style="font-size:16px;"></i>Scan book cover</button><div style="font-size:11px;color:var(--color-text-tertiary);text-align:center;margin-top:5px;">Detects the book, adds tags, and pulls its table of contents</div></div>
     <div id="book-result" style="display:none;margin-bottom:13px;"></div>
@@ -1319,10 +1319,10 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
       <div style="padding:14px 20px;display:flex;flex-direction:column;">
         <textarea class="ta" id="post-edit-ta" placeholder="What's on your mind?" oninput="autoGrowTA(this)" style="min-height:120px;margin-bottom:12px;overflow:hidden;"></textarea>
         <div class="field-label">Tags <span style="font-size:11px;color:var(--color-text-tertiary);">(optional)</span></div>
-        <div style="display:flex;gap:7px;margin-bottom:7px;"><input id="post-tag-input" class="text-input" placeholder="Add a tag" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();addPostTag();}"/><button class="btn-sm" onclick="addPostTag()">Add</button></div>
+        <div style="display:flex;gap:7px;margin-bottom:7px;"><input id="post-tag-input" class="text-input" placeholder="Add a tag" style="flex:1;margin-bottom:0;" onkeydown="if(event.key==='Enter'){event.preventDefault();addPostTag();}"/><button class="btn-sm" onclick="addPostTag()">Add</button></div>
         <div id="post-tag-chips" class="tag-wrap" style="margin-bottom:10px;"></div>
         <div class="field-label">Photo / video <span style="font-size:11px;color:var(--color-text-tertiary);">(optional)</span></div>
-        <div class="end-media-row" id="post-media-row"><button class="media-btn" onclick="pickMedia('photo','post')"><i class="ti ti-camera"></i>Photo</button><button class="media-btn" onclick="pickMedia('video','post')"><i class="ti ti-video"></i>Video</button><button class="media-btn selected" onclick="clearMedia('post')"><i class="ti ti-x"></i>None</button></div>
+        <div class="end-media-row" id="post-media-row"><button class="media-btn" onclick="pickMedia('photo','post',true)"><i class="ti ti-camera"></i>Camera</button><button class="media-btn" onclick="pickMedia('photo','post')"><i class="ti ti-photo"></i>Photo</button><button class="media-btn" onclick="pickMedia('video','post')"><i class="ti ti-video"></i>Video</button><button class="media-btn selected" onclick="clearMedia('post')"><i class="ti ti-x"></i>None</button></div>
         <div id="post-media-preview" style="display:none;margin-bottom:12px;position:relative;"></div>
         <div id="post-split-row" style="display:none;margin-bottom:12px;">
           <div class="field-label">Multiple photos</div>
@@ -1332,7 +1332,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
         <div class="field-label" style="margin-top:9px;">Category <span style="font-size:11px;color:var(--color-text-tertiary);">(optional)</span></div>
         <div id="post-cat-chips" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;"></div>
         <div class="field-label">To-do list <span style="font-size:11px;color:var(--color-text-tertiary);">(optional)</span></div>
-        <div style="display:flex;gap:7px;margin-bottom:7px;"><input id="post-todo-input" class="text-input" placeholder="Add a to-do item" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();addPostTodo();}"/><button class="btn-sm" onclick="addPostTodo()">Add</button></div>
+        <div style="display:flex;gap:7px;margin-bottom:7px;"><input id="post-todo-input" class="text-input" placeholder="Add a to-do item" style="flex:1;margin-bottom:0;" onkeydown="if(event.key==='Enter'){event.preventDefault();addPostTodo();}"/><button class="btn-sm" onclick="addPostTodo()">Add</button></div>
         <div id="post-todo-list" style="margin-bottom:10px;"></div>
         <div class="field-label" style="margin-top:9px;">Visibility</div>
         <div class="vis-toggle" style="margin-bottom:8px;"><button class="vis-btn sel" id="vis-pub" onclick="setVis('public')"><i class="ti ti-world" style="font-size:13px;vertical-align:-2px;margin-right:2px;"></i>Public</button><button class="vis-btn" id="vis-priv" onclick="setVis('private')"><i class="ti ti-lock" style="font-size:13px;vertical-align:-2px;margin-right:2px;"></i>Only me</button></div>
@@ -2401,9 +2401,9 @@ function readExifDate(arrayBuffer){
   }catch(e){}
   return null;
 }
-function pickMedia(kind,where){
+function pickMedia(kind,where,cam){
   const fi=ensureFileInput();
-  fi.accept=kind==='video'?'video/*':'image/*';fi.multiple=true;fi.value='';
+  fi.accept=kind==='video'?'video/*':'image/*';if(cam){fi.setAttribute('capture','environment');fi.multiple=false;}else{fi.removeAttribute('capture');fi.multiple=true;}fi.value='';
   fi.onchange=()=>{const files=[...(fi.files||[])];if(!files.length)return;let pending=files.length;
     files.forEach(f=>{const reader=new FileReader();reader.onload=()=>{const item={type:kind,url:reader.result,name:f.name,captureTime:(f.lastModified||null)};
       if(kind==='photo'){const fr2=new FileReader();fr2.onload=()=>{const ex=readExifDate(fr2.result);if(ex)item.captureTime=ex;mediaData[where].push(item);if(--pending===0)afterMediaAdded(where);};fr2.onerror=()=>{mediaData[where].push(item);if(--pending===0)afterMediaAdded(where);};fr2.readAsArrayBuffer(f);}
@@ -2420,9 +2420,9 @@ function clearMedia(where){mediaData[where]=[];renderMediaPreview(where);const r
 function carouselHTML(list){
   _lightboxList=list;
   if(list.length===1){const m=list[0];return m.type==='video'?`<video src="${m.url}" style="width:100%;border-radius:12px;max-height:380px;background:#000;" controls playsinline></video>`:`<img src="${m.url}" style="width:100%;border-radius:12px;display:block;cursor:zoom-in;" onclick="openLightbox(0)"/>`;}
-  const slides=list.map((m,i)=>`<div class="carousel-slide">${m.type==='video'?`<video src="${m.url}" style="width:100%;height:100%;object-fit:cover;background:#000;" controls playsinline></video>`:`<img src="${m.url}" style="width:100%;height:100%;object-fit:cover;cursor:zoom-in;" onclick="openLightbox(${i})"/>`}</div>`).join('');
-  const dots=list.map((m,i)=>`<span class="carousel-dot${i===0?' active':''}"></span>`).join('');
-  return `<div class="carousel"><div class="carousel-track">${slides}</div><div class="carousel-count">1/${list.length}</div><div class="carousel-dots">${dots}</div></div>`;
+  const slides=list.map((m,i)=>`<div class="wc-slide">${m.type==='video'?`<video src="${m.url}" style="width:100%;height:100%;object-fit:cover;background:#000;" controls playsinline></video>`:`<img src="${m.url}" style="width:100%;height:100%;object-fit:cover;cursor:zoom-in;" onclick="openLightbox(${i})"/>`}</div>`).join('');
+  const dots=list.map((m,i)=>`<span class="wc-dot${i===0?' active':''}" onclick="wcDot(this,${i})"></span>`).join('');
+  return `<div class="wc" style="border-radius:12px;" data-i="0" data-n="${list.length}" ontouchstart="wcTouchStart(event,this)" ontouchmove="wcTouchMove(event,this)" ontouchend="wcTouchEnd(event,this)"><div class="wc-track">${slides}</div><div class="wc-count">1/${list.length}</div><div class="wc-dots">${dots}</div></div>`;
 }
 function initCarousels(root){
   root.querySelectorAll('.carousel').forEach(c=>{const track=c.querySelector('.carousel-track');const dots=[...c.querySelectorAll('.carousel-dot')];const count=c.querySelector('.carousel-count');const n=dots.length;if(!track||!n)return;track.addEventListener('scroll',()=>{const i=Math.round(track.scrollLeft/track.clientWidth);dots.forEach((d,j)=>d.classList.toggle('active',j===i));if(count)count.textContent=(i+1)+'/'+n;},{passive:true});});
