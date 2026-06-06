@@ -3261,6 +3261,7 @@ function saveState(){try{const s={posts,xpTotal,totalSessions,personalBest,strea
   /* SAFETY GUARD: never let an empty in-memory state overwrite a non-empty saved one.
      Protects against a bug or half-initialized state silently wiping real posts. */
   if(posts.length===0&&_loadedOnce){try{const prev=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(prev&&Array.isArray(prev.posts)&&prev.posts.length>0){return;}}catch(e){}}
+  if(posts.length>0||_idbHydrated){try{idbSet(SAVE_KEY,s);}catch(e){}}
   /* rolling backup: keep the PREVIOUS good save under a .bak key before overwriting */
   try{const cur=localStorage.getItem(SAVE_KEY);if(cur&&cur.length>2)localStorage.setItem(SAVE_KEY+'.bak',cur);}catch(e){}
   try{ localStorage.setItem(SAVE_KEY,JSON.stringify(s)); }
@@ -3277,7 +3278,29 @@ function saveState(){try{const s={posts,xpTotal,totalSessions,personalBest,strea
 function loadState(){try{let raw=localStorage.getItem(SAVE_KEY);
   let parsed=null;if(raw){try{parsed=JSON.parse(raw);}catch(e){parsed=null;}}
   if(!parsed||(Array.isArray(parsed.posts)&&parsed.posts.length===0)){try{const bak=localStorage.getItem(SAVE_KEY+'.bak');if(bak){const bp=JSON.parse(bak);if(bp&&Array.isArray(bp.posts)&&bp.posts.length>0&&(!parsed||!parsed.posts||parsed.posts.length===0)){parsed=bp;}}}catch(e){}}
-  if(!parsed)return false;const s=parsed;_loadedOnce=true;if(s.posts){posts=s.posts.map(p=>{if(p._dateObj)p._dateObj=new Date(p._dateObj);return p;});}if(typeof s.xpTotal==='number')xpTotal=s.xpTotal;if(typeof s.totalSessions==='number')totalSessions=s.totalSessions;if(typeof s.personalBest==='number')personalBest=s.personalBest;if(typeof s.streakDays==='number')streakDays=s.streakDays;if(typeof s.syncSessionsDone==='number')syncSessionsDone=s.syncSessionsDone;if(typeof s.goalsSet==='number')goalsSet=s.goalsSet;if(typeof s.postsShared==='number')postsShared=s.postsShared;if(typeof s.perfectGoals==='number')perfectGoals=s.perfectGoals;if(typeof s.nightOwlCount==='number')nightOwlCount=s.nightOwlCount;if(typeof s.earlyBirdCount==='number')earlyBirdCount=s.earlyBirdCount;if(typeof s.weekendCount==='number')weekendCount=s.weekendCount;if(s.catCounts)catCounts=s.catCounts;if(s.customGoals)customGoals=s.customGoals;if(s.buddies)buddies=new Set(s.buddies);if(s.earnedBadges)earnedBadges=new Set(s.earnedBadges);if(s.cats)cats=s.cats;if(s.userId)userId=s.userId;if(s.userEmail)userEmail=s.userEmail;if(s.LANG)LANG=s.LANG;if(typeof s.isPremium==='boolean')isPremium=s.isPremium;if(typeof s.coachAdded==='boolean')coachAdded=s.coachAdded;if(s.profilePhoto)profilePhoto=s.profilePhoto;if(s.homeWallSize)homeWallSize=s.homeWallSize;if(s.sessionEndSound)sessionEndSound=s.sessionEndSound;if(s.customSoundData)customSoundData=s.customSoundData;if(typeof s.soundEnabled==='boolean')soundEnabled=s.soundEnabled;if(typeof s.hapticsEnabled==='boolean')hapticsEnabled=s.hapticsEnabled;if(typeof s.identityStatement==='string')identityStatement=s.identityStatement;if(typeof s.identityVotes==='number')identityVotes=s.identityVotes;if(typeof s.identityHidden==='boolean')identityHidden=s.identityHidden;if(Array.isArray(s.intentions))intentions=s.intentions;if(s.lastSessionDay)lastSessionDay=s.lastSessionDay;if(s.homeWallMode)homeWallMode=s.homeWallMode;if(typeof s.dayStartHour==='number')dayStartHour=s.dayStartHour;return !!s.userId;}catch(e){return false;}}
+  if(!parsed)return false;const s=parsed;_loadedOnce=true;if(typeof s._savedAt==='number')_bootSavedAt=s._savedAt;if(s.posts){posts=s.posts.map(p=>{if(p._dateObj)p._dateObj=new Date(p._dateObj);return p;});}if(typeof s.xpTotal==='number')xpTotal=s.xpTotal;if(typeof s.totalSessions==='number')totalSessions=s.totalSessions;if(typeof s.personalBest==='number')personalBest=s.personalBest;if(typeof s.streakDays==='number')streakDays=s.streakDays;if(typeof s.syncSessionsDone==='number')syncSessionsDone=s.syncSessionsDone;if(typeof s.goalsSet==='number')goalsSet=s.goalsSet;if(typeof s.postsShared==='number')postsShared=s.postsShared;if(typeof s.perfectGoals==='number')perfectGoals=s.perfectGoals;if(typeof s.nightOwlCount==='number')nightOwlCount=s.nightOwlCount;if(typeof s.earlyBirdCount==='number')earlyBirdCount=s.earlyBirdCount;if(typeof s.weekendCount==='number')weekendCount=s.weekendCount;if(s.catCounts)catCounts=s.catCounts;if(s.customGoals)customGoals=s.customGoals;if(s.buddies)buddies=new Set(s.buddies);if(s.earnedBadges)earnedBadges=new Set(s.earnedBadges);if(s.cats)cats=s.cats;if(s.userId)userId=s.userId;if(s.userEmail)userEmail=s.userEmail;if(s.LANG)LANG=s.LANG;if(typeof s.isPremium==='boolean')isPremium=s.isPremium;if(typeof s.coachAdded==='boolean')coachAdded=s.coachAdded;if(s.profilePhoto)profilePhoto=s.profilePhoto;if(s.homeWallSize)homeWallSize=s.homeWallSize;if(s.sessionEndSound)sessionEndSound=s.sessionEndSound;if(s.customSoundData)customSoundData=s.customSoundData;if(typeof s.soundEnabled==='boolean')soundEnabled=s.soundEnabled;if(typeof s.hapticsEnabled==='boolean')hapticsEnabled=s.hapticsEnabled;if(typeof s.identityStatement==='string')identityStatement=s.identityStatement;if(typeof s.identityVotes==='number')identityVotes=s.identityVotes;if(typeof s.identityHidden==='boolean')identityHidden=s.identityHidden;if(Array.isArray(s.intentions))intentions=s.intentions;if(s.lastSessionDay)lastSessionDay=s.lastSessionDay;if(s.homeWallMode)homeWallMode=s.homeWallMode;if(typeof s.dayStartHour==='number')dayStartHour=s.dayStartHour;return !!s.userId;}catch(e){return false;}}
+/* ── Durable local storage in IndexedDB (big capacity; localStorage stays as a fast-boot cache) ── */
+var _idbP=null,_bootSavedAt=0,_idbHydrated=false;
+function _idbDB(){ if(_idbP)return _idbP; _idbP=new Promise(function(res){ try{ if(!window.indexedDB){res(null);return;} var r=indexedDB.open('focusflow-db',1); r.onupgradeneeded=function(){try{r.result.createObjectStore('kv');}catch(e){}}; r.onsuccess=function(){res(r.result);}; r.onerror=function(){res(null);}; }catch(e){res(null);} }); return _idbP; }
+function idbSet(key,val){ return _idbDB().then(function(db){ if(!db)return false; return new Promise(function(res){ try{ var tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(val,key); tx.oncomplete=function(){res(true);}; tx.onerror=function(){res(false);}; tx.onabort=function(){res(false);}; }catch(e){res(false);} }); }); }
+function idbGet(key){ return _idbDB().then(function(db){ if(!db)return null; return new Promise(function(res){ try{ var rq=db.transaction('kv','readonly').objectStore('kv').get(key); rq.onsuccess=function(){res(rq.result);}; rq.onerror=function(){res(null);}; }catch(e){res(null);} }); }); }
+function idbHydrate(){
+  try{
+    idbGet(SAVE_KEY).then(function(s){
+      try{
+        if(!s||!Array.isArray(s.posts)){ _idbHydrated=true; if(posts&&posts.length){try{saveState();}catch(e){}} return; }
+        var idbTs=s._savedAt||0;
+        if(idbTs>=_bootSavedAt){
+          posts=s.posts.map(function(p){if(p._dateObj)p._dateObj=new Date(p._dateObj);return p;});
+          if(typeof renderWall==='function')renderWall();
+          if(homeWallMode==='timeline'&&typeof renderTimeline==='function')renderTimeline();
+          if(typeof updateProfileBadges==='function')updateProfileBadges();
+        }
+        _idbHydrated=true;
+      }catch(e){ _idbHydrated=true; }
+    });
+  }catch(e){ _idbHydrated=true; }
+}
 let _saveTimer=null;function persist(){clearTimeout(_saveTimer);_saveTimer=setTimeout(saveState,400);}
 document.getElementById('s1-next').style.opacity='0.35';
 /* Verify code box auto-advance */
@@ -3303,6 +3326,7 @@ iconReplace(document);
 applyLang();updateLangToggleUI();
 if(homeWallMode==='timeline')setWallMode('timeline');else setWallSize(homeWallSize);
 setTimeout(function(){try{restoreCloudSession();}catch(e){}},250);
+try{idbHydrate();}catch(e){}
 const _ht=document.getElementById('haptics-toggle');if(_ht)_ht.classList.toggle('on',hapticsEnabled);
 lockCfg=loadLockCfg();
 if(lockIsEnabled()){_locked=true;showLock('verify');}
