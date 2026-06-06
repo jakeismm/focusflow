@@ -44,7 +44,7 @@ window.ffCloudReady = function(){ return !!window.ffSB; };
   --radius-btn:14px;
 }
 @media (prefers-color-scheme:dark){
-  :root{
+  :root:not([data-theme]){
     --color-background-primary:#17171c;
     --color-background-secondary:#202028;
     --color-background-tertiary:#2b2b34;
@@ -62,6 +62,25 @@ window.ffCloudReady = function(){ return !!window.ffSB; };
     --color-border-danger:rgba(247,117,127,0.45);
   }
 }
+:root[data-theme="dark"]{
+  --color-background-primary:#17171c;
+  --color-background-secondary:#202028;
+  --color-background-tertiary:#2b2b34;
+  --color-background-danger:#3a1f1f;
+  --color-text-primary:#f2f4f6;
+  --color-text-secondary:#9ba3af;
+  --color-text-tertiary:#6b7280;
+  --color-text-danger:#f7757f;
+  --color-accent:#4a93ff;
+  --color-accent-bg:#1a2942;
+  --color-success:#28c08a;
+  --color-border-tertiary:rgba(255,255,255,0.08);
+  --color-border-secondary:rgba(255,255,255,0.18);
+  --color-border-primary:rgba(255,255,255,0.34);
+  --color-border-danger:rgba(247,117,127,0.45);
+}
+.theme-opt{flex:1;padding:9px 0;border-radius:10px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-sans);}
+.theme-opt.active{background:var(--color-accent);border-color:var(--color-accent);color:#fff;}
 html,body{margin:0;padding:0;background:var(--color-background-secondary);font-family:var(--font-sans);-webkit-tap-highlight-color:transparent;font-size:17px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overscroll-behavior-y:none;overscroll-behavior:none;letter-spacing:-0.01em;}
 body{display:flex;justify-content:center;min-height:100vh;}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
@@ -158,13 +177,13 @@ body{display:flex;justify-content:center;min-height:100vh;}
 .home-wall.size-s,.home-wall.size-m{gap:10px;}
 /* rich card panel content (scales per grid size) */
 .hw-cv{flex-direction:column;}
-.hw-cv-ico{font-size:40px;opacity:0.9;}
+.hw-cv-ico{font-size:58px;opacity:0.9;}
 .hw-cv-cat{font-size:26px;font-weight:800;line-height:1.12;letter-spacing:-0.02em;margin-top:8px;text-align:center;padding:0 10px;}
 .hw-cv-big{font-size:32px;font-weight:800;line-height:1;margin-top:8px;letter-spacing:-0.02em;}
 .hw-cv-sub{font-size:12px;font-weight:600;opacity:0.85;margin-top:5px;}
-.home-wall.size-m .hw-cv-ico{font-size:28px;}.home-wall.size-m .hw-cv-cat{font-size:17px;}.home-wall.size-m .hw-cv-big{font-size:24px;}.home-wall.size-m .hw-cv-sub{font-size:11px;}
-.home-wall.size-s .hw-cv-ico{font-size:18px;}.home-wall.size-s .hw-cv-cat{font-size:11px;margin-top:4px;}.home-wall.size-s .hw-cv-big{font-size:16px;margin-top:4px;}.home-wall.size-s .hw-cv-sub{font-size:9px;margin-top:3px;}
-.home-wall.size-xl .hw-cv-ico{font-size:52px;}.home-wall.size-xl .hw-cv-cat{font-size:30px;}.home-wall.size-xl .hw-cv-big{font-size:40px;}
+.home-wall.size-m .hw-cv-ico{font-size:38px;}.home-wall.size-m .hw-cv-cat{font-size:17px;}.home-wall.size-m .hw-cv-big{font-size:24px;}.home-wall.size-m .hw-cv-sub{font-size:11px;}
+.home-wall.size-s .hw-cv-ico{font-size:24px;}.home-wall.size-s .hw-cv-cat{font-size:11px;margin-top:4px;}.home-wall.size-s .hw-cv-big{font-size:16px;margin-top:4px;}.home-wall.size-s .hw-cv-sub{font-size:9px;margin-top:3px;}
+.home-wall.size-xl .hw-cv-ico{font-size:72px;}.home-wall.size-xl .hw-cv-cat{font-size:30px;}.home-wall.size-xl .hw-cv-big{font-size:40px;}
 .home-wall.size-m .hwl-info,.home-wall.size-s .hwl-info{padding:9px 10px 11px;}
 .home-wall.size-m .hwl-title,.home-wall.size-s .hwl-title{flex-wrap:wrap;gap:4px;}
 .home-wall.size-m .hwl-cat{font-size:12px;padding:3px 8px;}
@@ -182,6 +201,7 @@ body.solo .social-feature{display:none!important;}
 </style>
 </head>
 <body>
+<script>try{var _t=localStorage.getItem('focusflow_theme');if(_t==='light'||_t==='dark')document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 #app{margin:0 auto;background:var(--color-background-primary);overflow:hidden;font-family:var(--font-sans);position:relative;display:flex;flex-direction:column;}
@@ -1235,6 +1255,8 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
 <div id="s-settings" class="screen">
   <div class="topbar"><button class="ib" onclick="go('s-home')"><i class="ti ti-arrow-left"></i></button><span class="tb-title" data-i18n="settings">Settings</span><span></span></div>
   <div class="screen-scroll" style="padding-bottom:20px;">
+    <div class="menu-section-label" id="theme-set-section">Appearance</div>
+    <div class="menu-item" style="flex-direction:column;align-items:stretch;gap:10px;"><div class="menu-item-title" id="theme-set-title">Theme</div><div style="display:flex;gap:6px;"><button class="theme-opt" data-theme-val="system" onclick="setTheme('system')">System</button><button class="theme-opt" data-theme-val="light" onclick="setTheme('light')">Light</button><button class="theme-opt" data-theme-val="dark" onclick="setTheme('dark')">Dark</button></div></div>
     <div class="menu-section-label" data-i18n="set_privacy">Privacy</div>
     <div class="menu-item"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-user-off" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" id="solo-set-title">Solo mode</div><div class="menu-item-sub" id="solo-set-sub">Hide all social features — just the timer</div></div><button class="toggle" id="solo-set-toggle" onclick="toggleSoloMode()"></button></div>
     <div class="menu-item"><div class="menu-icon-box" style="background:var(--color-background-secondary);"><i class="ti ti-message-2" style="color:var(--color-text-secondary);"></i></div><div class="menu-item-text"><div class="menu-item-title" data-i18n="set_allow_msg">Allow messages</div><div class="menu-item-sub" data-i18n="set_allow_msg_sub">Anyone can send you messages</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
@@ -2164,7 +2186,7 @@ const ROOT_SCREENS=['s-home','s-onboard'];
 const NAV_ROOTS=['s-home','s-step1','s-discover','s-buddies','s-menu'];
 let navStack=[];
 let _suppressHistory=false;
-function _coreGo(id){if(id!=='s-level-complete'&&typeof stopAlarm==='function')stopAlarm();if(window.wallSelectMode&&id!=='s-home'){window.wallSelectMode=false;if(window.wallSelected&&window.wallSelected.clear)window.wallSelected.clear();var _wsb=document.getElementById('wall-select-bar');if(_wsb)_wsb.style.display='none';var _wsel=document.getElementById('wsz-select');if(_wsel)_wsel.className='wall-size-btn';}const _prevActive=document.querySelector('.screen.active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');if(_prevActive&&_prevActive.id!==id)haptic('navigate');closeAttachMenu();const map={'s-home':'gnav-home','s-step1':'gnav-session','s-step2':'gnav-session','s-step3':'gnav-session','s-timer':'gnav-session','s-discover':'gnav-discover','s-tag-feed':'gnav-discover','s-user-profile':'gnav-discover','s-group':'gnav-discover','s-group-create':'gnav-discover','s-buddies':'gnav-buddies','s-buddy-feed':'gnav-buddies','s-menu':'gnav-menu','s-messages':'gnav-menu','s-msg-thread':'gnav-menu','s-settings':'gnav-home','s-badges':'gnav-home'};document.querySelectorAll('.gnav-btn').forEach(b=>b.classList.remove('active'));const navId=map[id];if(navId&&document.getElementById(navId))document.getElementById(navId).classList.add('active');if(id==='s-discover'){renderDiscover();discOnEnter();}if(id==='s-buddies'){if(cloudSession()){const el=document.getElementById('buddy-list');if(el)el.innerHTML='<div style="padding:24px 0;text-align:center;color:var(--color-text-tertiary);"><div class="spinner" style="margin:0 auto;"></div></div>';loadCloudBuddies().then(ok=>{if(document.getElementById('s-buddies').classList.contains('active'))renderCloudBuddyList();});}else{renderBuddyList();}}if(id==='s-home'){updateProfileBadges();applyProfilePhoto&&applyProfilePhoto();renderIdentity&&renderIdentity();renderIntentions&&renderIntentions();renderRecovery&&renderRecovery();if(homeWallMode==='timeline')setWallMode('timeline');if(cloudSession()){loadCloudHomeStats();loadCloudPosts().then(ok=>{if(ok&&document.getElementById('s-home').classList.contains('active')){renderWall();updateProfileBadges();renderIdentity&&renderIdentity();if(homeWallMode==='timeline')renderTimeline();}});}}if(id==='s-settings'&&typeof renderEndSounds==='function'){renderEndSounds();updateDayStartLabel&&updateDayStartLabel();updateLockSettingUI&&updateLockSettingUI();if(typeof syncIdentitySetting==='function')syncIdentitySetting();}
+function _coreGo(id){if(id!=='s-level-complete'&&typeof stopAlarm==='function')stopAlarm();if(window.wallSelectMode&&id!=='s-home'){window.wallSelectMode=false;if(window.wallSelected&&window.wallSelected.clear)window.wallSelected.clear();var _wsb=document.getElementById('wall-select-bar');if(_wsb)_wsb.style.display='none';var _wsel=document.getElementById('wsz-select');if(_wsel)_wsel.className='wall-size-btn';}const _prevActive=document.querySelector('.screen.active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');if(_prevActive&&_prevActive.id!==id)haptic('navigate');closeAttachMenu();const map={'s-home':'gnav-home','s-step1':'gnav-session','s-step2':'gnav-session','s-step3':'gnav-session','s-timer':'gnav-session','s-discover':'gnav-discover','s-tag-feed':'gnav-discover','s-user-profile':'gnav-discover','s-group':'gnav-discover','s-group-create':'gnav-discover','s-buddies':'gnav-buddies','s-buddy-feed':'gnav-buddies','s-menu':'gnav-menu','s-messages':'gnav-menu','s-msg-thread':'gnav-menu','s-settings':'gnav-home','s-badges':'gnav-home'};document.querySelectorAll('.gnav-btn').forEach(b=>b.classList.remove('active'));const navId=map[id];if(navId&&document.getElementById(navId))document.getElementById(navId).classList.add('active');if(id==='s-discover'){renderDiscover();discOnEnter();}if(id==='s-buddies'){if(cloudSession()){const el=document.getElementById('buddy-list');if(el)el.innerHTML='<div style="padding:24px 0;text-align:center;color:var(--color-text-tertiary);"><div class="spinner" style="margin:0 auto;"></div></div>';loadCloudBuddies().then(ok=>{if(document.getElementById('s-buddies').classList.contains('active'))renderCloudBuddyList();});}else{renderBuddyList();}}if(id==='s-home'){updateProfileBadges();applyProfilePhoto&&applyProfilePhoto();renderIdentity&&renderIdentity();renderIntentions&&renderIntentions();renderRecovery&&renderRecovery();if(homeWallMode==='timeline')setWallMode('timeline');if(cloudSession()){loadCloudHomeStats();loadCloudPosts().then(ok=>{if(ok&&document.getElementById('s-home').classList.contains('active')){renderWall();updateProfileBadges();renderIdentity&&renderIdentity();if(homeWallMode==='timeline')renderTimeline();}});}}if(id==='s-settings'&&typeof renderEndSounds==='function'){renderEndSounds();updateDayStartLabel&&updateDayStartLabel();updateLockSettingUI&&updateLockSettingUI();if(typeof syncIdentitySetting==='function')syncIdentitySetting();if(typeof syncThemeUI==='function')syncThemeUI();}
   /* content-settled cue (Toss-style) for the data-heavy screens */
   if(_prevActive&&_prevActive.id!==id&&['s-home','s-discover','s-buddies','s-badges','s-stats'].includes(id)){clearTimeout(_pageReadyT);_pageReadyT=setTimeout(()=>haptic('pageReady'),120);}
   /* floating Post button: visible on browsing screens, hidden during auth/timer/editor */
@@ -2407,6 +2429,23 @@ function readExifDate(arrayBuffer){
   }catch(e){}
   return null;
 }
+/* ── Theme: dark / light / follow-system ── */
+function applyTheme(t){
+  if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}
+  else {document.documentElement.removeAttribute('data-theme');t='system';}
+  try{localStorage.setItem('focusflow_theme',t);}catch(e){}
+  try{var mc=document.querySelector('meta[name="theme-color"]');if(mc){var dark=t==='dark'||(t==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches);mc.setAttribute('content',dark?'#17171c':'#ffffff');}}catch(e){}
+}
+function setTheme(t){applyTheme(t);syncThemeUI();}
+function syncThemeUI(){
+  var cur='system';try{cur=localStorage.getItem('focusflow_theme')||'system';}catch(e){}
+  var ko=(typeof LANG!=='undefined'&&LANG==='ko');
+  var labels={system:ko?'시스템':'System',light:ko?'라이트':'Light',dark:ko?'다크':'Dark'};
+  ['system','light','dark'].forEach(function(v){var b=document.querySelector('.theme-opt[data-theme-val="'+v+'"]');if(b){b.classList.toggle('active',v===cur);b.textContent=labels[v];}});
+  var sec=document.getElementById('theme-set-section');if(sec)sec.textContent=ko?'화면 테마':'Appearance';
+  var ti=document.getElementById('theme-set-title');if(ti)ti.textContent=ko?'테마':'Theme';
+}
+
 /* ── Re-read embedded EXIF capture time from already-stored photos (used when editing) ── */
 function _reloadEditExif(){
   (mediaData.post||[]).forEach(function(m){
@@ -3361,6 +3400,7 @@ else if(_restored){applyUserId();applyProfilePhoto();document.getElementById('gl
 (function(){const init=document.querySelector('.screen.active');const id=init?init.id:'s-onboard';navStack=[id];try{history.replaceState({screen:id,depth:1},'');}catch(e){}})();
 try{const _io=new MutationObserver(muts=>{for(const m of muts){for(const n of m.addedNodes){if(n.nodeType===1){if(n.classList&&n.classList.contains('ti')&&n.tagName==='I')iconReplace(n.parentNode||document);else if(n.querySelector&&n.querySelector('i.ti'))iconReplace(n);}}}});_io.observe(document.body,{childList:true,subtree:true});}catch(e){}
 try{_ffvInit();}catch(e){}
+try{applyTheme((localStorage.getItem('focusflow_theme')||'system'));}catch(e){}
 /* Register service worker for offline + installability (only works when served over http/https, not file://) */
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{});});}
 </script>
