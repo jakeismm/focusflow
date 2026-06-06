@@ -1314,8 +1314,8 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
     <div class="dash-section" id="dash-book-section" style="display:none;"><div class="dash-section-title">Book progress</div><div id="dash-book"></div></div>
     <div class="dash-section" id="dash-journal-section"><div id="dash-journal"></div></div>
     <div class="dash-section" id="dash-todos-section" style="display:none;"><div class="dash-section-title" id="dash-todos-title">To-do</div><div id="dash-todos"></div></div>
-    <div id="post-edit-mode" style="display:none;flex-direction:column;flex:1;min-height:0;">
-      <div style="flex:1;overflow-y:auto;padding:14px 20px;display:flex;flex-direction:column;">
+    <div id="post-edit-mode" style="display:none;">
+      <div style="padding:14px 20px;display:flex;flex-direction:column;">
         <textarea class="ta" id="post-edit-ta" placeholder="What's on your mind?" style="min-height:120px;margin-bottom:12px;"></textarea>
         <div class="field-label">Tags <span style="font-size:11px;color:var(--color-text-tertiary);">(optional)</span></div>
         <div style="display:flex;gap:7px;margin-bottom:7px;"><input id="post-tag-input" class="text-input" placeholder="Add a tag" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();addPostTag();}"/><button class="btn-sm" onclick="addPostTag()">Add</button></div>
@@ -1337,7 +1337,7 @@ textarea.ta:focus{outline:2px solid var(--color-accent);outline-offset:-2px;}
         <div class="vis-toggle" style="margin-bottom:8px;"><button class="vis-btn sel" id="vis-pub" onclick="setVis('public')"><i class="ti ti-world" style="font-size:13px;vertical-align:-2px;margin-right:2px;"></i>Public</button><button class="vis-btn" id="vis-priv" onclick="setVis('private')"><i class="ti ti-lock" style="font-size:13px;vertical-align:-2px;margin-right:2px;"></i>Only me</button></div>
         <button class="btn-end" id="post-delete-btn" onclick="deletePost()" style="display:none;margin-top:4px;"><i class="ti ti-trash" style="font-size:13px;vertical-align:-2px;margin-right:4px;"></i>Delete</button>
       </div>
-      <div style="flex-shrink:0;padding:12px 20px;display:flex;gap:9px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);">
+      <div style="position:sticky;bottom:0;flex-shrink:0;padding:12px 20px;display:flex;gap:9px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);">
         <button class="btn-outline" onclick="cancelEditPost()" style="flex:1;">Cancel</button>
         <button class="btn-main" onclick="savePost()" style="flex:2;">Save</button>
       </div>
@@ -1549,7 +1549,7 @@ const ICON_PATHS={
 };
 function svgIcon(name,size){const key=name.replace(/^ti-/,'');const inner=ICON_PATHS[key]||ICON_PATHS['tag'];return '<svg class="ti ti-'+key+'" width="'+(size||'1em')+'" height="'+(size||'1em')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.125em;">'+inner+'</svg>';}
 /* Replace any leftover <i class="ti ..."> elements with inline SVG (handles dynamically-rendered markup too) */
-function iconReplace(root){(root||document).querySelectorAll('i.ti').forEach(el=>{const cls=[...el.classList].find(c=>c.startsWith('ti-')&&c!=='ti');if(!cls)return;const tmp=document.createElement('span');tmp.innerHTML=svgIcon(cls,'1em');const svg=tmp.firstChild;/* preserve id + inline style + size */if(el.id)svg.id=el.id;if(el.getAttribute('style'))svg.setAttribute('style',el.getAttribute('style'));svg.style.width='1em';svg.style.height='1em';svg.setAttribute('data-icon',cls);el.replaceWith(svg);});}
+function iconReplace(root){(root||document).querySelectorAll('i.ti').forEach(el=>{const cls=[...el.classList].find(c=>c.startsWith('ti-')&&c!=='ti');if(!cls)return;const tmp=document.createElement('span');tmp.innerHTML=svgIcon(cls,'1em');const svg=tmp.firstChild;/* preserve id + inline style + size */if(el.id)svg.id=el.id;if(el.getAttribute('style'))svg.setAttribute('style',el.getAttribute('style'));svg.style.width='1em';svg.style.height='1em';svg.setAttribute('data-icon',cls);if(el.getAttribute('onclick'))svg.setAttribute('onclick',el.getAttribute('onclick'));el.replaceWith(svg);});}
 /* Swap the glyph of an already-rendered icon (SVG or <i>) by element id */
 function setIcon(id,name){const el=document.getElementById(id);if(!el)return;const key=name.replace(/^ti-\s*/,'').replace(/^ti-/,'');if(el.tagName&&el.tagName.toLowerCase()==='svg'){el.innerHTML=ICON_PATHS[key]||ICON_PATHS['tag'];el.setAttribute('data-icon','ti-'+key);}else{/* still an <i>: set class then convert */el.className='ti ti-'+key;iconReplace(el.parentNode||document);}}
 const COLORS=[{bg:'#E6F1FB',text:'#0C447C',dot:'#378ADD'},{bg:'#EAF3DE',text:'#27500A',dot:'#639922'},{bg:'#FAEEDA',text:'#633806',dot:'#BA7517'},{bg:'#FBEAF0',text:'#72243E',dot:'#D4537E'},{bg:'#EEEDFE',text:'#3C3489',dot:'#7F77DD'},{bg:'#E1F5EE',text:'#085041',dot:'#1D9E75'},{bg:'#FAECE7',text:'#712B13',dot:'#D85A30'},{bg:'#F1EFE8',text:'#444441',dot:'#888780'},{bg:'#FCEBEB',text:'#791F1F',dot:'#E24B4A'},{bg:'#F4C0D1',text:'#4B1528',dot:'#993556'}];
