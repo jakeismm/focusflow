@@ -344,9 +344,9 @@ button i.ti,.btn-sm i.ti{color:inherit;}
 .home-wall.size-xl{grid-template-columns:repeat(1,minmax(0,1fr));gap:16px;padding:0;}
 .hwl-1{aspect-ratio:1/1;}
 .hw-cover.hw-cv{aspect-ratio:16/10;height:auto;}
-.home-wall.size-xl .hwl-1{aspect-ratio:4/5;}
-.home-wall.size-xl .wc-slide{aspect-ratio:4/5;}
-.home-wall.size-xl .hw-cover.hw-cv{aspect-ratio:4/5;}
+.home-wall.size-xl .hwl-1{aspect-ratio:9/16;}
+.home-wall.size-xl .wc-slide{aspect-ratio:9/16;}
+.home-wall.size-xl .hw-cover.hw-cv{aspect-ratio:9/16;}
 /* large = Instagram feed card: media on top, text/date below */
 .hw-card{background:var(--color-background-primary);border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid var(--color-border-secondary);}
 .hwl-media{position:relative;background:var(--color-background-secondary);min-height:80px;}
@@ -2761,7 +2761,7 @@ function openNewPost(){window._pendingGroupPost=null;window.postMediaSplit=false
   const js=document.querySelector('#dash-journal').closest('.dash-section');if(js)js.style.display='none';const bsec=document.getElementById('dash-book-section');if(bsec)bsec.style.display='none';var _tds2=document.getElementById('dash-todos-section');if(_tds2)_tds2.style.display='none';
   document.getElementById('post-delete-btn').style.display='none';
   document.getElementById('post-edit-mode').style.display='flex';document.getElementById('post-edit-btn').style.display='none';document.getElementById('post-back').onclick=()=>go('s-home');
-  const sc=document.querySelector('#s-post .screen-scroll');if(sc){sc.style.display='flex';sc.style.flexDirection='column';sc.style.overflow='hidden';}
+  const sc=document.querySelector('#s-post .screen-scroll');if(sc){sc.style.display='';sc.style.flexDirection='';sc.style.overflow='';}
   go('s-post');}
 function renderDots(){const w=document.getElementById('idots');w.innerHTML='';const goal=infiniteMode?Math.max(8,sessionIntervals+3):intervalGoal;const show=Math.min(goal,20);for(let i=0;i<show;i++){const d=document.createElement('div');if(i<sessionIntervals)d.className='idot done';else if(i===sessionIntervals)d.className='idot active-dot';else d.className='idot';w.appendChild(d);}if(infiniteMode&&sessionIntervals>0){const m=document.createElement('div');m.style.cssText='font-size:11px;color:var(--color-text-tertiary);margin-left:3px;';m.textContent='...';w.appendChild(m);}}
 
@@ -3108,7 +3108,6 @@ function renderIdentity(){
     const votes=identityVotes||totalSessions||0;
     el.innerHTML=`<div onclick="openIdentityEdit()" style="cursor:pointer;">
       <div style="font-size:14px;font-weight:600;line-height:1.3;color:var(--color-text-primary);">${LANG==='ko'?'<span style="color:var(--color-accent);font-weight:700;">🎯 </span>':'<span style="color:var(--color-accent);font-weight:700;">becoming </span>'}${escapeHtml(identityStatement)} <i class="ti ti-pencil" style="font-size:12px;color:var(--color-text-tertiary);vertical-align:0;"></i></div>
-      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:1px;">${votes} ${LANG==='ko'?'세션':'sessions'}${(streakDays||0)>0?' · '+streakDays+(LANG==='ko'?'일 연속':'d streak'):''}</div>
     </div>`;
     iconReplace(el);
   }else if(!identityHidden){
