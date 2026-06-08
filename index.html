@@ -224,7 +224,7 @@ body.solo .social-feature{display:none!important;}
 .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:none;background:rgba(0,0,0,0.4);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;}
 .lb-prev{left:12px;}.lb-next{right:12px;}
 .lb-hint{position:absolute;bottom:calc(26px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;color:rgba(255,255,255,0.7);font-size:12px;pointer-events:none;transition:opacity 0.4s;}
-.pin-key{width:72px;height:72px;border-radius:50%;border:none;background:var(--color-background-secondary);color:var(--color-text-primary);font-size:28px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);transition:background 0.12s,transform 0.08s;}
+.pin-key{width:72px;height:72px;border-radius:50%;border:none;background:var(--color-background-secondary);color:var(--color-text-primary);font-size:28px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);transition:background 0.12s,transform 0.08s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
 .pin-key:active{background:var(--color-background-tertiary);transform:scale(0.93);}
 .pin-key.pin-del,.pin-key.pin-bio{background:none;color:var(--color-text-secondary);}
 .pin-key.pin-bio{color:var(--color-accent);}
@@ -357,7 +357,7 @@ button i.ti,.btn-sm i.ti{color:inherit;}
 .wall-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;}
 .wall-list{display:flex;flex-direction:column;padding:0 16px;}
 /* home Instagram-style grid */
-.home-wall{display:grid;gap:3px;padding:0 16px;}
+.home-wall{display:grid;gap:3px;padding:0 16px;align-items:start;}
 .home-wall.size-s{grid-template-columns:repeat(3,minmax(0,1fr));}
 .home-wall.size-m{grid-template-columns:repeat(2,minmax(0,1fr));}
 .home-wall.size-l{grid-template-columns:repeat(1,minmax(0,1fr));gap:16px;padding:0;}
@@ -367,6 +367,7 @@ button i.ti,.btn-sm i.ti{color:inherit;}
 .home-wall.size-xl .hwl-1{aspect-ratio:5/8;}
 .home-wall.size-xl .wc-slide{aspect-ratio:5/8;}
 .home-wall.size-xl .hw-cover.hw-cv{aspect-ratio:5/8;}
+.hw-cover.hw-cv.hw-cv-mini{aspect-ratio:auto!important;height:auto!important;padding:30px 16px!important;}
 /* large = Instagram feed card: media on top, text/date below */
 .hw-card{background:var(--color-background-primary);border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid var(--color-border-secondary);}
 .hwl-media{position:relative;background:var(--color-background-secondary);min-height:80px;}
@@ -2756,7 +2757,7 @@ function wallTileHTML(p){
   if(list.length){media=`<div class="hwl-media">${wallCarouselHTML(list,p.id)}${p.loc?`<div class="hwl-loc"><i class="ti ti-map-pin" style="font-size:11px;"></i> ${escapeHtml(p.loc)}</div>`:''}</div>`;}
   else if(!journal){media=`<div class="hwl-media"><div class="hw-cover hw-cv" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon} hw-cv-ico"></i><div class="hw-cv-cat">${escapeHtml(p.catName)}</div><div class="hw-cv-big">${fmtMins(p.focusTotalMin)}</div><div class="hw-cv-sub">${p.intervals}${LANG==='ko'?' 인터벌':(' interval'+(p.intervals!==1?'s':''))}${p.pauseCount?' · '+p.pauseCount+(LANG==='ko'?' 정지':' pause'+(p.pauseCount!==1?'s':'')):''}</div></div></div>`;}
   else if(snippet){media='';}
-  else{media=`<div class="hwl-media"><div class="hw-cover hw-cv" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon} hw-cv-ico" style="opacity:0.9;"></i><div class="hw-cv-cat">${escapeHtml(p.catName)}</div></div></div>`;}
+  else{media=`<div class="hwl-media"><div class="hw-cover hw-cv hw-cv-mini" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon} hw-cv-ico" style="opacity:0.9;"></i><div class="hw-cv-cat">${escapeHtml(p.catName)}</div></div></div>`;}
   const titleLine=(journal&&!p.catChosen)?'':`<div class="hwl-title"><span class="hwl-cat" style="background:${p.catColor};color:${p.catTextColor};"><i class="ti ${p.catIcon}" style="font-size:14px;"></i> ${escapeHtml(p.catName)}</span>${p.intervals>0?` <span class="hwl-stat">${fmtMins(p.focusTotalMin)} · ${p.intervals}${LANG==='ko'?' 인터벌':' int'}</span>`:''}</div>`;
   const tagsLine=(p.tags&&p.tags.length)?`<div class="hwl-tags">${p.tags.slice(0,4).map(t=>'#'+escapeHtml(t)).join(' ')}</div>`:'';
   const _long=snippet&&snippet.length>140;
