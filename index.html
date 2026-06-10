@@ -3406,6 +3406,11 @@ function _serializePosts(){ try{ return posts.map(function(p){ var q={}; for(var
 function resolveLocalMedia(){ try{ if(!Array.isArray(posts)||!posts.length)return; var jobs=[]; posts.forEach(function(p){ if(Array.isArray(p.mediaList))p.mediaList.forEach(function(m){ if(m&&m.mediaId&&!m.url)jobs.push(mediaResolveURL(m.mediaId).then(function(u){ if(u)m.url=u; })); }); }); if(!jobs.length)return; Promise.all(jobs).then(function(){ posts.forEach(function(p){ if(Array.isArray(p.mediaList)&&p.mediaList[0]&&p.mediaList[0].url&&!p.mediaUrl){ p.mediaUrl=p.mediaList[0].url; p.media=p.mediaList[0].type; } }); try{ if(typeof renderWall==='function')renderWall(); if(homeWallMode==='timeline'&&typeof renderTimeline==='function')renderTimeline(); if(typeof updateProfileBadges==='function')updateProfileBadges(); }catch(e){} }); }catch(e){} }
 /* one-time: convert any legacy base64 (data:) media into a stored Blob + mediaId */
 function _migrateLegacyMedia(){ try{ if(!Array.isArray(posts)||!posts.length)return; var jobs=[],changed=false; posts.forEach(function(p){ if(Array.isArray(p.mediaList))p.mediaList.forEach(function(m){ if(m&&!m.mediaId&&typeof m.url==='string'&&m.url.indexOf('data:')===0){ jobs.push(fetch(m.url).then(function(r){return r.blob();}).then(function(b){ var id=_newMediaId(); m.mediaId=id; _mediaUrlCache[id]=m.url; return idbMediaSet(id,b).then(function(){changed=true;}); }).catch(function(){})); } }); }); if(!jobs.length)return; Promise.all(jobs).then(function(){ if(changed){ try{ persist(); }catch(e){} } }); }catch(e){} }
+/* Reaper: delete media-store Blobs no longer referenced by any post OR by in-flight composer media.
+   Debounced; the keep-set deliberately includes mediaData (a picked-but-not-yet-posted photo lives there). */
+function _refMediaIds(){ var keep={}; try{ if(Array.isArray(posts))posts.forEach(function(p){ if(Array.isArray(p.mediaList))p.mediaList.forEach(function(m){ if(m&&m.mediaId)keep[m.mediaId]=1; }); }); if(mediaData&&typeof mediaData==='object')Object.keys(mediaData).forEach(function(w){ (mediaData[w]||[]).forEach(function(m){ if(m&&m.mediaId)keep[m.mediaId]=1; }); }); }catch(e){} return keep; }
+var _reapTimer=null;
+function reapOrphanMedia(){ try{ clearTimeout(_reapTimer); _reapTimer=setTimeout(function(){ try{ _idbDB().then(function(db){ if(!db)return; try{ var rq=db.transaction('media','readonly').objectStore('media').getAllKeys(); rq.onsuccess=function(){ try{ var keys=rq.result||[]; var keep=_refMediaIds(); var dead=keys.filter(function(k){return !keep[k];}); if(!dead.length)return; var os=db.transaction('media','readwrite').objectStore('media'); dead.forEach(function(k){ try{ os.delete(k); if(_mediaUrlCache[k]){ try{URL.revokeObjectURL(_mediaUrlCache[k]);}catch(e2){} delete _mediaUrlCache[k]; } }catch(e3){} }); }catch(e){} }; rq.onerror=function(){}; }catch(e){} }); }catch(e){} }, 4000); }catch(e){} }
 function idbHydrate(){
   try{
     idbGet(SAVE_KEY).then(function(s){
@@ -3424,7 +3429,7 @@ function idbHydrate(){
     });
   }catch(e){ _idbHydrated=true; }
 }
-let _saveTimer=null;function persist(){clearTimeout(_saveTimer);_saveTimer=setTimeout(saveState,400);}
+let _saveTimer=null;function persist(){clearTimeout(_saveTimer);_saveTimer=setTimeout(function(){saveState();reapOrphanMedia();},400);}
 document.getElementById('s1-next').style.opacity='0.35';
 /* Verify code box auto-advance */
 document.querySelectorAll('.verify-box').forEach((box,i,arr)=>{box.addEventListener('input',()=>{box.value=box.value.replace(/[^0-9]/g,'');if(box.value&&i<arr.length-1)arr[i+1].focus();});box.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!box.value&&i>0)arr[i-1].focus();});});
